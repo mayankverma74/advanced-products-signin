@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup - Advanced Products</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="auth.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.all.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .welcome-title {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            background: linear-gradient(45deg, #9c27b0, #673ab7, #3f51b5);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 4px 8px rgba(0,0,0,0.1);
+            animation: gradientMove 5s ease infinite;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #673ab7;
+            font-size: 1.2em;
+        }
+
+        .input-group input {
+            padding-left: 40px !important;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #d4c5f9;
+        }
+
+        .input-group input:focus {
+            border-color: #9c27b0;
+            box-shadow: 0 0 0 2px rgba(156, 39, 176, 0.1);
+        }
+
+        .form-container {
+            background: linear-gradient(135deg, #f5f0ff, #e8e0ff);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(103, 58, 183, 0.1);
+            max-width: 400px;
+            width: 90%;
+            margin: 0 auto;
+            border: 1px solid rgba(156, 39, 176, 0.1);
+        }
+
+        .otp-section {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .otp-section.visible {
+            display: block;
+            opacity: 1;
+        }
+        #resendOtp {
+            background: none;
+            border: none;
+            color: #007bff;
+            text-decoration: underline;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+        #resendOtp:hover {
+            color: #0056b3;
+        }
+        #resendOtp:disabled {
+            color: #6c757d;
+            cursor: not-allowed;
+        }
+        .timer {
+            font-size: 14px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        .form-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .form-group input {
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .form-group input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        }
+        .submit-button {
+            transition: background-color 0.3s, transform 0.1s;
+        }
+        .submit-button:hover {
+            background-color: #0056b3;
+        }
+        .submit-button:active {
+            transform: scale(0.98);
+        }
+
+        button[type="submit"] {
+            background: linear-gradient(45deg, #9c27b0, #673ab7);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            width: 100%;
+        }
+
+        button[type="submit"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(103, 58, 183, 0.2);
+        }
+
+        .auth-link a {
+            color: #9c27b0;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .auth-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body onload="checkAlreadyAuth()">
+    <div class="container">
+        <h1 class="welcome-title">Welcome to Advanced Products 🚀</h1>
+        <div class="form-container">
+            <form id="signup-form" class="auth-form">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="fullName" name="fullName" placeholder="Full Name" required pattern="[A-Za-z ]{3,20}" title="3-20 letters only" maxlength="20">
+                </div>
+                
+                <div class="input-group">
+                    <i class="fas fa-phone"></i>
+                    <input type="tel" id="phone" name="phone" placeholder="Phone Number" required pattern="[0-9]{10}" title="10 digits only" maxlength="10">
+                </div>
+                
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" name="password" placeholder="Password" required minlength="6" maxlength="20" title="6-20 characters">
+                </div>
+
+                <div id="otpSection" class="form-group otp-section">
+                    <div class="input-group">
+                        <i class="fas fa-key"></i>
+                        <input type="text" id="otp" name="otp" placeholder="Enter OTP" maxlength="6">
+                    </div>
+                    <div class="timer" id="otpTimer"></div>
+                    <button type="button" id="resendOtp" disabled>Resend OTP</button>
+                </div>
+
+                <button type="submit" id="submitButton" class="submit-button">📝 Sign Up</button>
+                <p class="auth-link">Already have an account? <a href="/login">🔑 Login here</a></p>
+            </form>
+        </div>
+    </div>
+    <script src="signup.js"></script>
+</body>
+</html>

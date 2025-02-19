@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Advanced Products</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="auth.js"></script>
+    <style>
+        .welcome-title {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            background: linear-gradient(45deg, #9c27b0, #673ab7, #3f51b5);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 4px 8px rgba(0,0,0,0.1);
+            animation: gradientMove 5s ease infinite;
+            background-size: 200% 200%;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #673ab7;
+            font-size: 1.2em;
+        }
+
+        .input-group input {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #d4c5f9;
+            padding-left: 40px !important;
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            border-color: #9c27b0;
+            box-shadow: 0 0 0 2px rgba(156, 39, 176, 0.1);
+            outline: none;
+        }
+
+        .form-container {
+            background: linear-gradient(135deg, #f5f0ff, #e8e0ff);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(103, 58, 183, 0.1);
+            max-width: 400px;
+            width: 90%;
+            margin: 0 auto;
+            border: 1px solid rgba(156, 39, 176, 0.1);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(45deg, #9c27b0, #673ab7);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(103, 58, 183, 0.2);
+        }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+        }
+
+        .signup-link a {
+            color: #9c27b0;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+
+        .links-section {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .forgot-link {
+            margin-top: 10px;
+            color: #666;
+        }
+
+        .forgot-link a {
+            color: #9c27b0;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .forgot-link a:hover {
+            text-decoration: underline;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #f5f0ff, #e8e0ff);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(103, 58, 183, 0.1);
+            max-width: 400px;
+            width: 90%;
+            margin: 50px auto;
+            border: 1px solid rgba(156, 39, 176, 0.1);
+            animation: slideDown 0.3s ease;
+        }
+
+        .modal-title {
+            text-align: center;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #9c27b0, #673ab7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .step {
+            animation: fadeIn 0.3s ease;
+        }
+
+        .timer {
+            text-align: center;
+            color: #666;
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
+
+        .resend-btn {
+            width: 100%;
+            padding: 10px;
+            background: none;
+            border: 1px solid #673ab7;
+            border-radius: 8px;
+            color: #673ab7;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .resend-btn:hover:not(:disabled) {
+            background: rgba(103, 58, 183, 0.1);
+        }
+
+        .resend-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        .forgot-password a {
+            color: #9c27b0;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #f5f0ff, #e8e0ff);
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(103, 58, 183, 0.2);
+            max-width: 400px;
+            width: 90%;
+            position: relative;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .step {
+            display: none;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        .step-title {
+            text-align: center;
+            color: #673ab7;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        #resetOtpTimer {
+            color: #666;
+            font-size: 14px;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body onload="checkAlreadyAuth()">
+    <div class="container">
+        <h1 class="welcome-title">Welcome to Advanced Products 🚀</h1>
+        <div class="form-container">
+            <form id="loginForm">
+                <div class="input-group">
+                    <i class="fas fa-phone"></i>
+                    <input type="tel" id="phone" name="phone" placeholder="Phone Number 📱" required pattern="[0-9]{10}" title="10 digits only" maxlength="10">
+                </div>
+                
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" name="password" placeholder="Password 🔒" required minlength="6" maxlength="20" title="6-20 characters">
+                </div>
+
+                <div class="forgot-password">
+                    <a href="#" id="forgotPasswordLink">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+                <div class="links-section">
+                    <p class="signup-link">Don't have an account? <a href="/signup">📝 Sign up here</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div id="forgotPasswordModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <form id="forgotPasswordForm">
+                <!-- Step 1: Phone Number -->
+                <div id="stepPhone" class="step active">
+                    <h2 class="step-title">Reset Password 🔐</h2>
+                    <div class="input-group">
+                        <i class="fas fa-phone"></i>
+                        <input type="tel" id="resetPhone" placeholder="Enter Registered Phone Number 📱" required pattern="[0-9]{10}" maxlength="10">
+                    </div>
+                    <button type="button" id="sendResetOtpBtn" class="submit-btn">
+                        <i class="fas fa-paper-plane"></i> Send OTP
+                    </button>
+                </div>
+
+                <!-- Step 2: OTP Verification -->
+                <div id="stepOtp" class="step" style="display: none;">
+                    <h2 class="step-title">Verify OTP 🔑</h2>
+                    <div class="input-group">
+                        <i class="fas fa-key"></i>
+                        <input type="text" id="resetOtp" placeholder="Enter OTP 🔑" maxlength="6" pattern="[0-9]{6}">
+                    </div>
+                    <div class="timer" id="resetOtpTimer"></div>
+                    <button type="button" id="verifyResetOtpBtn" class="submit-btn">
+                        <i class="fas fa-check"></i> Verify OTP
+                    </button>
+                    <button type="button" id="resendResetOtp" class="resend-btn" disabled>
+                        <i class="fas fa-redo"></i> Resend OTP
+                    </button>
+                </div>
+
+                <!-- Step 3: New Password -->
+                <div id="stepNewPassword" class="step" style="display: none;">
+                    <h2 class="step-title">Set New Password 🔒</h2>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="newPassword" placeholder="New Password 🔒" required minlength="6" maxlength="20">
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="confirmNewPassword" placeholder="Confirm New Password 🔒" required minlength="6" maxlength="20">
+                    </div>
+                    <button type="submit" id="updatePasswordBtn" class="submit-btn">
+                        <i class="fas fa-save"></i> Update Password
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="login.js"></script>
+    <script src="forgot-password.js"></script>
+</body>
+</html>

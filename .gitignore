@@ -1,0 +1,17 @@
+# Environment variables
+.env
+
+# Dependencies
+node_modules/
+package-lock.json
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# MongoDB installer
+mongodb.msi
+
+# Logs
+*.log
+logs/

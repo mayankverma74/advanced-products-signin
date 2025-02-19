@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Advanced Products</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="auth.js"></script>
+    <style>
+        .dashboard-container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+            padding: 15px 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            color: #3498db;
+        }
+
+        .user-menu {
+            position: relative;
+        }
+
+        .menu-trigger {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #2c3e50;
+            cursor: pointer;
+            padding: 5px;
+            transition: color 0.3s;
+        }
+
+        .menu-trigger:hover {
+            color: #3498db;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            padding: 10px 0;
+            min-width: 200px;
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .dropdown-menu .user-info {
+            padding: 10px 20px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 10px;
+        }
+
+        .dropdown-menu .user-name {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .dropdown-menu .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            color: #e74c3c;
+            text-decoration: none;
+            transition: background 0.3s;
+            cursor: pointer;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            font-size: 16px;
+        }
+
+        .dropdown-menu .logout-btn:hover {
+            background: #f8f9fa;
+        }
+
+        .welcome-section {
+            text-align: center;
+            padding: 50px 20px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .welcome-section h1 {
+            font-size: 36px;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .welcome-section p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .content-section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 15px;
+            }
+            
+            .logo {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <nav class="navbar">
+            <div class="logo">
+                <i class="fas fa-cube"></i>
+                Advanced Products
+            </div>
+            <div class="user-menu">
+                <button class="menu-trigger" onclick="toggleMenu()">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+                <div class="dropdown-menu" id="userMenu">
+                    <div class="user-info">
+                        <div class="user-name" id="userFullName"></div>
+                    </div>
+                    <button class="logout-btn" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <section class="welcome-section">
+            <h1>Welcome to Advanced Products</h1>
+            <p>Your trusted platform for innovative solutions</p>
+        </section>
+
+        <section class="content-section">
+            <h2>Your Dashboard</h2>
+            <p>This is your personalized dashboard. More features coming soon!</p>
+        </section>
+    </div>
+
+    <script>
+        // Check authentication on page load
+        window.onload = function() {
+            const token = localStorage.getItem('token');
+            const user = JSON.parse(localStorage.getItem('user'));
+
+            if (!token || !user) {
+                window.location.href = '/login';
+                return;
+            }
+
+            // Display user's name
+            document.getElementById('userFullName').textContent = user.fullName;
+        };
+
+        function toggleMenu() {
+            const menu = document.getElementById('userMenu');
+            menu.classList.toggle('show');
+        }
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('userMenu');
+            const trigger = document.querySelector('.menu-trigger');
+            
+            if (!menu.contains(event.target) && !trigger.contains(event.target)) {
+                menu.classList.remove('show');
+            }
+        });
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/login';
+        }
+    </script>
+</body>
+</html>
