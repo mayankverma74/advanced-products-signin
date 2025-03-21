@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Advanced Products</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #673ab7;
+            --primary-dark: #5e35b1;
+            --primary-light: #d1c4e9;
+            --primary-lighter: #ede7f6;
+            --text-dark: #2c3e50;
+            --card-shadow: 0 8px 20px rgba(103, 58, 183, 0.15);
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, var(--primary-light), var(--primary-lighter));
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .user-header-info {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            color: white;
+        }
+
+        .user-header-name {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .user-balance {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .user-balance i {
+            color: #ffd700;
+        }
+
+        .balance-amount {
+            font-weight: 600;
+        }
+
+        .logo {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .menu-dots {
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+        }
+
+        .menu-dots:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 2rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: var(--card-shadow);
+            min-width: 250px;
+            display: none;
+            animation: slideDown 0.3s ease;
+            z-index: 1000;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .user-info {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--primary-lighter);
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary-lighter), white);
+        }
+
+        .user-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 0.8rem;
+            box-shadow: 0 4px 10px rgba(103, 58, 183, 0.2);
+        }
+
+        .user-name {
+            color: var(--text-dark);
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 0.3rem;
+        }
+
+        .menu-item {
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--text-dark);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .menu-item i {
+            width: 20px;
+            color: var(--primary-color);
+        }
+
+        .menu-item:hover {
+            background-color: var(--primary-lighter);
+        }
+
+        .menu-divider {
+            height: 1px;
+            background-color: var(--primary-lighter);
+            margin: 0.5rem 0;
+        }
+
+        .main-content {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            color: var(--primary-dark);
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .welcome-title {
+            font-size: 3rem;
+            background: linear-gradient(135deg, #9c27b0, #673ab7, #3f51b5);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+            text-align: center;
+            animation: titleGlow 2s ease-in-out infinite alternate;
+            text-shadow: 0 0 30px rgba(103, 58, 183, 0.3);
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
+            border-radius: 2px;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .investment-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .investment-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(103, 58, 183, 0.2);
+        }
+
+        .investment-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
+        }
+
+        .card-title {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .card-detail {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--primary-lighter);
+        }
+
+        .detail-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .detail-value {
+            color: var(--text-dark);
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .total-earnings {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 2px dashed var(--primary-lighter);
+        }
+
+        .total-earnings .detail-label {
+            font-size: 1rem;
+            color: var(--primary-color);
+        }
+
+        .total-earnings .detail-value {
+            font-size: 1.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+        }
+
+        .details-button {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            margin-top: 1rem;
+            background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(103, 58, 183, 0.2);
+        }
+
+        .details-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(103, 58, 183, 0.3);
+            background: linear-gradient(45deg, var(--primary-dark), var(--primary-color));
+        }
+
+        .details-button i {
+            margin-left: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .details-button:hover i {
+            transform: translateX(3px);
+        }
+
+        .benefits-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: var(--card-shadow);
+            text-align: center;
+            animation: fadeIn 1s ease;
+        }
+
+        .benefits-title {
+            color: var(--primary-dark);
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .benefits-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .benefit-item {
+            padding: 1rem;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .benefit-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .benefit-item i {
+            color: var(--primary-color);
+            margin-right: 0.5rem;
+        }
+
+        .cta-text {
+            color: var(--primary-dark);
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: var(--primary-lighter);
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        .rocket {
+            display: inline-block;
+            animation: rocketFloat 2s ease-in-out infinite;
+        }
+
+        .buy-button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background-color 0.3s ease;
+        }
+
+        .buy-button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .swal2-popup {
+            font-size: 1.1em;
+        }
+
+        .plan-description {
+            margin: 20px 0;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .modal-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .modal-form input,
+        .modal-form select {
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .modal-form label {
+            font-weight: bold;
+            color: var(--primary-dark);
+        }
+
+        .modal-form button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        .modal-form button:hover {
+            background: var(--primary-dark);
+        }
+
+        .razorpay-link {
+            display: block;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #2196f3;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .razorpay-link:hover {
+            background: #1976d2;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes titleGlow {
+            from {
+                filter: drop-shadow(0 0 2px rgba(103, 58, 183, 0.4));
+            }
+            to {
+                filter: drop-shadow(0 0 10px rgba(103, 58, 183, 0.6));
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes rocketFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-left">
+            <a href="/dashboard" class="logo">
+                <i class="fas fa-cube"></i>
+                Advanced Products
+            </a>
+        </div>
+        <div class="navbar-right">
+            <div class="user-header-info">
+                <div class="user-header-name">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="headerUserName">Loading...</span>
+                </div>
+                <div class="user-balance">
+                    <i class="fas fa-wallet"></i>
+                    <span class="balance-amount" id="headerUserBalance">₹0.00</span>
+                </div>
+            </div>
+            <div class="menu-dots" onclick="toggleMenu()">
+                <i class="fas fa-ellipsis-v"></i>
+            </div>
+            <div class="dropdown-menu" id="userMenu">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="user-name" id="userDisplayName">Loading...</div>
+                </div>
+                <div class="menu-item" onclick="showDepositModal()">
+                    <i class="fas fa-money-bill-wave"></i>
+                    Deposit Amount
+                </div>
+                <div class="menu-item" onclick="showWithdrawalModal()">
+                    <i class="fas fa-hand-holding-usd"></i>
+                    Withdrawal
+                </div>
+                <div class="menu-item" onclick="showInvestmentHistory()">
+                    <i class="fas fa-history"></i>
+                    Investment History
+                </div>
+                <div class="menu-item" onclick="showSavedCards()">
+                    <i class="fas fa-credit-card"></i>
+                    Saved Cards
+                </div>
+                <div class="menu-divider"></div>
+                <div class="menu-item" onclick="handleLogout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <h1 class="welcome-title">Welcome to Advanced Products</h1>
+
+        <!-- Benefits Section -->
+        <div class="benefits-section">
+            <h2 class="benefits-title">Why Choose These Investment Plans?</h2>
+            <ul class="benefits-list">
+                <li class="benefit-item">
+                    <i class="fas fa-check-circle"></i>
+                    Guaranteed Daily Income – You start earning from Day 1!
+                </li>
+                <li class="benefit-item">
+                    <i class="fas fa-check-circle"></i>
+                    Flexible Options – Choose between short-term or long-term plans
+                </li>
+                <li class="benefit-item">
+                    <i class="fas fa-check-circle"></i>
+                    High Returns – Multiply your money without complex processes
+                </li>
+                <li class="benefit-item">
+                    <i class="fas fa-check-circle"></i>
+                    Safe & Reliable – Simple, transparent, and highly rewarding
+                </li>
+            </ul>
+            <p class="cta-text">
+                Choose your plan today and start earning effortlessly! <span class="rocket">🚀</span>
+            </p>
+        </div>
+
+        <!-- Basic Products Investment Section -->
+        <h2 class="section-title">Basic Products Investment (Monthly)</h2>
+        <div class="cards-container">
+            <!-- Basic Investment Card 1 -->
+            <div class="investment-card">
+                <h3 class="card-title">Basic Investment - 1</h3>
+                <div class="card-detail">
+                    <span class="detail-label">Investment Amount</span>
+                    <span class="detail-value">₹299</span>
+                </div>
+                <div class="card-detail">
+                    <span class="detail-label">Daily Income</span>
+                    <span class="detail-value">₹340</span>
+                </div>
+                <div class="card-detail">
+                    <span class="detail-label">Earnings Days</span>
+                    <span class="detail-value">60 Days</span>
+                </div>
+                <div class="total-earnings">
+                    <div class="detail-label">Total Earnings</div>
+                    <div class="detail-value">₹20,400</div>
+                    <a href="#" class="details-button" onclick="showDetails('basic-1')">
+                        Click Here for More Details <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Basic Investment Card 2 -->
+            <div class="investment-card">
+                <h3 class="card-title">Basic Investment - 2</h3>
+                <div class="card-detail">
+                    <span class="detail-label">Investment Amount</span>
+                    <span class="detail-value">₹720</span>
+                </div>
+                <div class="card-detail">
+                    <span class="detail-label">Daily Income</span>
+                    <span class="detail-value">₹740</span>
+                </div>
+                <div class="card-detail">
+                    <span class="detail-label">Earnings Days</span>
+                    <span class="detail-value">60 Days</span>
+                </div>
+                <div class="total-earnings">
+                    <div class="detail-label">Total Earnings</div>
+                    <div class="detail-value">₹44,400</div>
+                    <a href="#" class="details-button" onclick="showDetails('basic-2')">
+                        Click Here for More Details <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Basic Investment Card 3 -->
+            <div class="investment-card">
+                <h3 class="card-title">Basic Investment - 3</h3>
+                <div class="card-detail">
+                    <span class="detail-label">Investment Amount</span>
+                    <span class="detail-value">₹1,200</span>
+                </div>
+                <div class="card-detail">
+                    <span class="detail-label">Daily Income</span>
+                    <span class="detail-value">₹1,240</span>
+                </div>
+                <div class="card-detail">
+                    <span class="detail-label">Earnings Days</span>
+                    <span class="detail-value">60 Days</span>
+                </div>
+                <div class="total-earnings">
+                    <div class="detail-label">Total Earnings</div>
+                    <div class="detail-value">₹74,400</div>
+                    <a href="#" class="details-button" onclick="showDetails('basic-3')">
+                        Click Here for More Details <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Basic Investment Card 4 -->
+            <div class="investment-card">
+                <h3 class="card-title">Basic Investment - 4</h3>
+                <div class="card-detail">
+                    <span class="detail-label">Investment Amount</span>
+                    <span class="detail-value">₹1,499</span>
+                </div>
+                <div class="card-detail">
+                    <span class="detail-label">Daily Income</span>
+                    <span class="detail-value">₹1,940</span>
+                </div>
+                <div class="card-detail">
+                    <span class="detail-label">Earnings Days</span>
+                    <span class="detail-value">60 Days</span>
+                </div>
+                <div class="total-earnings">
+                    <div class="detail-label">Total Earnings</div>
+                    <div class="detail-value">₹116,400</div>
+                    <a href="#" class="details-button" onclick="showDetails('basic-4')">
+                        Click Here for More Details <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Basic Investment Card 5 -->
+            <div class="investment-card">
+                <h3 class="card-title">Basic Investment - 5</h3>
+                <div class="card-detail">
+                    <span class="detail-label">Investment Amount</span>
+                    <span class="detail-value">₹2,000</span>
+                </div>
+                <div class="card-detail">
+                    <span class="detail-label">Daily Income</span>
+                    <span class="detail-value">₹3,340</span>
+                </div>
+                <div class="card-detail">
+                    <span class="detail-label">Earnings Days</span>
+                    <span class="detail-value">60 Days</span>
+                </div>
+                <div class="total-earnings">
+                    <div class="detail-label">Total Earnings</div>
+                    <div class="detail-value">₹200,400</div>
+                    <a href="#" class="details-button" onclick="showDetails('basic-5')">
+                        Click Here for More Details <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Basic Investment Card 6 -->
+            <div class="investment-card">
+                <h3 class="card-title">Basic Investment - 6</h3>
+                <div class="card-detail">
+                    <span class="detail-label">Investment Amount</span>
+                    <span class="detail-value">₹3,400</span>
+                </div>
+                <div class="card-detail">
+                    <span class="detail-label">Daily Income</span>
+                    <span class="detail-value">₹6,640</span>
+                </div>
+                <div class="card-detail">
+                    <span class="detail-label">Earnings Days</span>
+                    <span class="detail-value">60 Days</span>
+                </div>
+                <div class="total-earnings">
+                    <div class="detail-label">Total Earnings</div>
+                    <div class="detail-value">₹398,400</div>
+                    <a href="#" class="details-button" onclick="showDetails('basic-6')">
+                        Click Here for More Details <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Advanced Products Investment Section -->
+        <h2 class="section-title">Advanced Products Investment (Weekly)</h2>
+        <div class="cards-container">
+            <!-- Advanced Investment Card 1 -->
+            <div class="investment-card">
+                <h3 class="card-title">Advanced Investment - 1</h3>
+                <div class="card-detail">
+                    <span class="detail-label">Investment Amount</span>
+                    <span class="detail-value">₹540</span>
+                </div>
+                <div class="card-detail">
+                    <span class="detail-label">Daily Income</span>
+                    <span class="detail-value">₹500</span>
+                </div>
+                <div class="card-detail">
+                    <span class="detail-label">Earnings Days</span>
+                    <span class="detail-value">7 Days</span>
+                </div>
+                <div class="total-earnings">
+                    <div class="detail-label">Total Earnings</div>
+                    <div class="detail-value">₹3,500</div>
+                    <a href="#" class="details-button" onclick="showDetails('advanced-1')">
+                        Click Here for More Details <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Advanced Investment Card 2 -->
+            <div class="investment-card">
+                <h3 class="card-title">Advanced Investment - 2</h3>
+                <div class="card-detail">
+                    <span class="detail-label">Investment Amount</span>
+                    <span class="detail-value">₹1,240</span>
+                </div>
+                <div class="card-detail">
+                    <span class="detail-label">Daily Income</span>
+                    <span class="detail-value">₹1,640</span>
+                </div>
+                <div class="card-detail">
+                    <span class="detail-label">Earnings Days</span>
+                    <span class="detail-value">7 Days</span>
+                </div>
+                <div class="total-earnings">
+                    <div class="detail-label">Total Earnings</div>
+                    <div class="detail-value">₹11,400</div>
+                    <a href="#" class="details-button" onclick="showDetails('advanced-2')">
+                        Click Here for More Details <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Advanced Investment Card 3 -->
+            <div class="investment-card">
+                <h3 class="card-title">Advanced Investment - 3</h3>
+                <div class="card-detail">
+                    <span class="detail-label">Investment Amount</span>
+                    <span class="detail-value">₹1,799</span>
+                </div>
+                <div class="card-detail">
+                    <span class="detail-label">Daily Income</span>
+                    <span class="detail-value">₹2,740</span>
+                </div>
+                <div class="card-detail">
+                    <span class="detail-label">Earnings Days</span>
+                    <span class="detail-value">7 Days</span>
+                </div>
+                <div class="total-earnings">
+                    <div class="detail-label">Total Earnings</div>
+                    <div class="detail-value">₹19,180</div>
+                    <a href="#" class="details-button" onclick="showDetails('advanced-3')">
+                        Click Here for More Details <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get user data from token
+        async function getUserData() {
+            try {
+                const token = localStorage.getItem('token');
+                const storedUser = localStorage.getItem('user');
+
+                if (!token || !storedUser) {
+                    window.location.href = '/login.html';
+                    return;
+                }
+
+                // First display stored user data
+                const userData = JSON.parse(storedUser);
+                if (userData) {
+                    document.getElementById('userDisplayName').textContent = userData.fullName;
+                    document.getElementById('headerUserName').textContent = userData.fullName;
+                    const formattedBalance = new Intl.NumberFormat('en-IN', {
+                        style: 'currency',
+                        currency: 'INR',
+                        minimumFractionDigits: 2
+                    }).format(userData.balance || 0);
+                    document.getElementById('headerUserBalance').textContent = formattedBalance;
+                }
+
+                // Fetch fresh data from MongoDB
+                const response = await fetch('/api/user/profile', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch user data');
+                }
+
+                const data = await response.json();
+                if (data.user) {
+                    // Update localStorage with fresh data
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    
+                    // Update UI with fresh data
+                    document.getElementById('userDisplayName').textContent = data.user.fullName;
+                    document.getElementById('headerUserName').textContent = data.user.fullName;
+                    const formattedBalance = new Intl.NumberFormat('en-IN', {
+                        style: 'currency',
+                        currency: 'INR',
+                        minimumFractionDigits: 2
+                    }).format(data.user.balance || 0);
+                    document.getElementById('headerUserBalance').textContent = formattedBalance;
+                }
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+                // On error, we'll keep showing the stored data, but notify about the refresh error
+                const storedUser = localStorage.getItem('user');
+                if (!storedUser) {
+                    window.location.href = '/login.html';
+                    return;
+                }
+                
+                Swal.fire({
+                    title: 'Connection Error',
+                    text: 'Using saved data. Please check your internet connection.',
+                    icon: 'warning',
+                    confirmButtonColor: '#673ab7'
+                });
+            }
+        }
+
+        // Call getUserData when page loads
+        document.addEventListener('DOMContentLoaded', getUserData);
+
+        function toggleMenu() {
+            const menu = document.getElementById('userMenu');
+            menu.classList.toggle('show');
+        }
+
+        async function handleLogout() {
+            try {
+                localStorage.removeItem('token');
+                
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Logged Out Successfully',
+                    text: 'See you soon!',
+                    timer: 1500,
+                    showConfirmButton: false,
+                    background: '#fff',
+                    iconColor: '#673ab7'
+                });
+                
+                window.location.href = '/login.html';
+            } catch (error) {
+                console.error('Logout error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Something went wrong during logout',
+                    confirmButtonColor: '#673ab7',
+                    background: '#fff'
+                });
+            }
+        }
+
+        const planDetails = {
+            'basic-1': {
+                title: "Basic Investment - 1",
+                description: "Want to step into the world of smart investments? Start with just ₹299 and watch it grow! Every single day, you'll earn ₹340, and in just 60 days, your total earnings will reach ₹20,400! This is the perfect plan for those who want to get started with a low-risk, high-reward opportunity!",
+                investment: "₹299",
+                earnings: "₹20,400"
+            },
+            'basic-2': {
+                title: "Basic Investment - 2",
+                description: "Looking for something bigger? Invest ₹720 and get an assured return of ₹740 daily. By the time your 60 days are up, you'll have earned an impressive ₹44,400! This plan is perfect for those who want a solid and steady way to multiply their money effortlessly!",
+                investment: "₹720",
+                earnings: "₹44,400"
+            },
+            'basic-3': {
+                title: "Basic Investment - 3",
+                description: "Take a step towards financial freedom! With an investment of ₹1,200, you'll be earning ₹1,240 every day. That means by the end of 60 days, your total earnings will be a staggering ₹74,400! This is a great opportunity to grow your wealth without any hassle.",
+                investment: "₹1,200",
+                earnings: "₹74,400"
+            },
+            'basic-4': {
+                title: "Basic Investment - 4",
+                description: "Want higher returns in a short time? With just ₹1,499, you'll be making ₹1,940 every day! That's an incredible ₹1,16,400 at the end of 60 days. This plan is ideal for those who want to maximize their earnings while keeping things simple and effective!",
+                investment: "₹1,499",
+                earnings: "₹1,16,400"
+            },
+            'basic-5': {
+                title: "Basic Investment - 5",
+                description: "Ready to take your investments to the next level? Invest ₹2,000 today and earn ₹3,340 every single day! In just 60 days, you'll have a total earning of ₹2,00,400! This plan is made for those who want bigger, better, and faster returns!",
+                investment: "₹2,000",
+                earnings: "₹2,00,400"
+            },
+            'basic-6': {
+                title: "Basic Investment - 6",
+                description: "Looking for the ultimate investment plan? With ₹3,400, you'll be earning ₹6,640 daily. In just 60 days, you'll have a mind-blowing total earning of ₹3,98,400! This plan is for those who want to make serious profits and achieve financial growth quickly!",
+                investment: "₹3,400",
+                earnings: "₹3,98,400"
+            },
+            'advanced-1': {
+                title: "Advanced Investment - 1",
+                description: "Need quick returns? Invest ₹540 now and start earning ₹500 every day. In just 7 days, you'll have ₹3,500! This short-term plan is perfect for those who want fast earnings without waiting for months!",
+                investment: "₹540",
+                earnings: "₹3,500"
+            },
+            'advanced-2': {
+                title: "Advanced Investment - 2",
+                description: "Want a fast-track way to grow your money? With just ₹1,240, you'll start earning ₹1,640 every day! In only one week, your total earnings will reach ₹11,400! This is an excellent opportunity for those who want quick, reliable profits!",
+                investment: "₹1,240",
+                earnings: "₹11,400"
+            },
+            'advanced-3': {
+                title: "Advanced Investment - 3",
+                description: "Go big and earn bigger! With ₹1,799, you can start earning ₹2,740 daily. By the end of the week, you'll have a massive ₹19,180 in your account! If you want fast and high returns, this is the best plan for you!",
+                investment: "₹1,799",
+                earnings: "₹19,180"
+            }
+        };
+
+        function showDetails(planId) {
+            const plan = planDetails[planId];
+            if (!plan) return;
+
+            Swal.fire({
+                title: plan.title,
+                html: `
+                    <div class="plan-description">
+                        ${plan.description}
+                    </div>
+                    <div style="margin: 15px 0;">
+                        <strong>Investment Amount:</strong> ${plan.investment}<br>
+                        <strong>Total Earnings:</strong> ${plan.earnings}
+                    </div>
+                    <button class="buy-button" onclick="handlePurchase('${planId}')">Buy This Plan</button>
+                `,
+                showConfirmButton: false,
+                showCloseButton: true,
+                customClass: {
+                    container: 'plan-details-popup'
+                }
+            });
+        }
+
+        function handlePurchase(planId) {
+            const plan = planDetails[planId];
+            if (!plan) return;
+
+            Swal.fire({
+                title: 'Confirm Purchase',
+                text: `Are you sure you want to invest ${plan.investment} in ${plan.title}?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Invest Now!',
+                cancelButtonText: 'No, Cancel',
+                confirmButtonColor: '#673ab7',
+                cancelButtonColor: '#d33'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Here you would typically make an API call to process the purchase
+                    Swal.fire(
+                        'Investment Initiated!',
+                        'Your investment request has been received. Please check your email for payment instructions.',
+                        'success'
+                    );
+                }
+            });
+        }
+
+        async function showDepositModal() {
+            const { value: formValues } = await Swal.fire({
+                title: 'Deposit Funds',
+                html: `
+                    <div class="modal-form">
+                        <p>First, make the payment through our Razorpay link:</p>
+                        <a href="https://razorpay.me/@ypsmart" target="_blank" class="razorpay-link">
+                            Pay via Razorpay
+                        </a>
+                        <p>After payment, please fill in the details below:</p>
+                        <label for="depositAmount">Amount</label>
+                        <input type="number" id="depositAmount" class="swal2-input" placeholder="Enter amount" required>
+                        <label for="depositUtr">UTR Number (12 digits)</label>
+                        <input type="text" id="depositUtr" class="swal2-input" placeholder="Enter UTR number" pattern="[0-9]{12}" required>
+                        <label for="depositName">Your Name</label>
+                        <input type="text" id="depositName" class="swal2-input" placeholder="Enter your name" required>
+                        <label for="depositPhone">Phone Number</label>
+                        <input type="tel" id="depositPhone" class="swal2-input" placeholder="Enter phone number" required>
+                    </div>
+                `,
+                focusConfirm: false,
+                showCancelButton: true,
+                confirmButtonText: 'Submit',
+                preConfirm: () => {
+                    const amount = document.getElementById('depositAmount').value;
+                    const utrNumber = document.getElementById('depositUtr').value;
+                    const userName = document.getElementById('depositName').value;
+                    const phoneNumber = document.getElementById('depositPhone').value;
+
+                    if (!amount || !utrNumber || !userName || !phoneNumber) {
+                        Swal.showValidationMessage('Please fill in all fields');
+                        return false;
+                    }
+
+                    if (utrNumber.length !== 12) {
+                        Swal.showValidationMessage('UTR number must be 12 digits');
+                        return false;
+                    }
+
+                    return { amount, utrNumber, userName, phoneNumber };
+                }
+            });
+
+            if (formValues) {
+                try {
+                    const response = await fetch('/api/transactions/deposit', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        },
+                        body: JSON.stringify(formValues)
+                    });
+
+                    if (!response.ok) throw new Error('Failed to process deposit');
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Deposit Submitted',
+                        text: 'Your deposit request has been submitted and will be processed soon.'
+                    });
+                } catch (error) {
+                    console.error('Deposit error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to process deposit. Please try again.'
+                    });
+                }
+            }
+        }
+
+        async function showWithdrawalModal() {
+            const { value: formValues } = await Swal.fire({
+                title: 'Withdraw Funds',
+                html: `
+                    <div class="modal-form">
+                        <label for="withdrawalAmount">Amount (min ₹500)</label>
+                        <input type="number" id="withdrawalAmount" class="swal2-input" min="500" placeholder="Enter amount" required>
+                        <label for="withdrawalName">Your Name</label>
+                        <input type="text" id="withdrawalName" class="swal2-input" placeholder="Enter your name" required>
+                        <label for="withdrawalPhone">Phone Number</label>
+                        <input type="tel" id="withdrawalPhone" class="swal2-input" placeholder="Enter phone number" required>
+                        <label for="withdrawalMode">Payment Mode</label>
+                        <select id="withdrawalMode" class="swal2-input" required>
+                            <option value="">Select payment mode</option>
+                            <option value="upi">UPI</option>
+                            <option value="bank">Bank Transfer</option>
+                            <option value="phonepe">PhonePe</option>
+                        </select>
+                        <label for="withdrawalDetails">Payment Details</label>
+                        <input type="text" id="withdrawalDetails" class="swal2-input" placeholder="Enter UPI ID/Bank details/PhonePe number" required>
+                    </div>
+                `,
+                focusConfirm: false,
+                showCancelButton: true,
+                confirmButtonText: 'Submit',
+                preConfirm: () => {
+                    const amount = document.getElementById('withdrawalAmount').value;
+                    const userName = document.getElementById('withdrawalName').value;
+                    const phoneNumber = document.getElementById('withdrawalPhone').value;
+                    const paymentMode = document.getElementById('withdrawalMode').value;
+                    const paymentDetails = document.getElementById('withdrawalDetails').value;
+
+                    if (!amount || !userName || !phoneNumber || !paymentMode || !paymentDetails) {
+                        Swal.showValidationMessage('Please fill in all fields');
+                        return false;
+                    }
+
+                    if (amount < 500) {
+                        Swal.showValidationMessage('Minimum withdrawal amount is ₹500');
+                        return false;
+                    }
+
+                    return { amount, userName, phoneNumber, paymentMode, paymentDetails };
+                }
+            });
+
+            if (formValues) {
+                try {
+                    const response = await fetch('/api/transactions/withdrawal', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        },
+                        body: JSON.stringify(formValues)
+                    });
+
+                    if (!response.ok) throw new Error('Failed to process withdrawal');
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Withdrawal Requested',
+                        text: 'Your withdrawal request has been submitted and will be processed soon.'
+                    });
+                } catch (error) {
+                    console.error('Withdrawal error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to process withdrawal. Please try again.'
+                    });
+                }
+            }
+        }
+
+        function showInvestmentHistory() {
+            // Add your investment history display logic here
+            Swal.fire({
+                title: 'Investment History',
+                html: `
+                    <div style="max-height: 400px; overflow-y: auto;">
+                        <div class="history-item" style="border-bottom: 1px solid #eee; padding: 10px; text-align: left;">
+                            <strong>Basic Investment - 1</strong><br>
+                            Amount: ₹299<br>
+                            Date: ${new Date().toLocaleDateString()}
+                        </div>
+                        <!-- Add more history items dynamically -->
+                    </div>
+                `,
+                width: '600px'
+            });
+        }
+
+        function showSavedCards() {
+            // Add your saved cards display logic here
+            Swal.fire({
+                title: 'Saved Cards',
+                html: `
+                    <div style="max-height: 400px; overflow-y: auto;">
+                        <div class="card-item" style="border: 1px solid #eee; padding: 15px; margin: 10px; border-radius: 8px; text-align: left;">
+                            <i class="fas fa-credit-card"></i> **** **** **** 1234<br>
+                            <small>Expires: 12/25</small>
+                        </div>
+                        <!-- Add more cards dynamically -->
+                    </div>
+                `,
+                width: '500px'
+            });
+        }
+    </script>
+</body>
+</html>

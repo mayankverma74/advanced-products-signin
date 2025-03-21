@@ -3,140 +3,588 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Advanced Products</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Advanced Products - Dashboard</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="alternate icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="auth.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <style>
-        .dashboard-container {
-            padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
+        :root {
+            --primary-purple: #7e57c2;
+            --light-purple: #f6f3ff;
+            --gradient: linear-gradient(145deg, #7e57c2, #9575cd);
+            --card-gradient: linear-gradient(145deg, #f6f3ff, #ffffff);
+            --success-green: #10b981;
+            --warning-yellow: #f59e0b;
+            --error-red: #ef4444;
         }
 
-        .navbar {
+        * {
+            margin: 0; 
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: var(--light-purple);
+            min-height: 100vh;
+        }
+
+        /* Header Styles */
+        .header-section {
+            background: white;
+            padding: 20px;
+            border-radius: 0 0 30px 30px;
+            box-shadow: 0 4px 20px rgba(126, 87, 194, 0.1);
+            margin-bottom: 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+        }
+
+        .header-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient);
+        }
+
+        .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: #fff;
-            padding: 15px 30px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            border-radius: 10px;
-            margin-bottom: 30px;
+            gap: 15px;
             position: relative;
+        }
+
+        .brand-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            transform: rotate(-5deg);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(126, 87, 194, 0.2);
+        }
+
+        .user-avatar:hover {
+            transform: rotate(0deg) scale(1.05);
+        }
+
+        .welcome-text {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .welcome-title {
+            font-size: 22px;
+            font-weight: 600;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+        }
+
+        .user-name {
+            font-size: 15px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .user-name .badge {
+            background: linear-gradient(45deg, #FFD700, #FFA500, #FFD700);
+            background-size: 200% 200%;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #fff;
+            font-weight: 600;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            animation: shine 3s linear infinite;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .user-name .badge::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(255, 255, 255, 0.3),
+                transparent
+            );
+            transform: rotate(45deg);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shine {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%) rotate(45deg);
+            }
+            100% {
+                transform: translateX(100%) rotate(45deg);
+            }
+        }
+
+        .menu-container {
+            position: relative;
+            z-index: 9999;
+        }
+
+        .menu-toggle {
+            background: var(--gradient);
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(126, 87, 194, 0.2);
+        }
+
+        .menu-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(126, 87, 194, 0.3);
+        }
+
+        .menu-options {
+            display: none;
+            position: fixed;
+            right: 20px;
+            top: 100px;
+            background: white;
+            border-radius: 20px;
+            width: 300px;
+            padding: 10px;
+            box-shadow: 0 10px 30px rgba(126, 87, 194, 0.15);
+            border: 1px solid rgba(126, 87, 194, 0.1);
             z-index: 1000;
         }
 
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: #2c3e50;
+        .menu-options.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        .menu-item {
             display: flex;
             align-items: center;
-            gap: 10px;
-        }
-
-        .logo i {
-            color: #3498db;
-        }
-
-        .user-menu {
+            padding: 12px 16px;
+            text-decoration: none;
+            color: #333;
+            border-radius: 14px;
+            transition: all 0.3s ease;
+            margin: 4px 0;
             position: relative;
         }
 
-        .menu-trigger {
-            background: none;
-            border: none;
-            font-size: 24px;
-            color: #2c3e50;
-            cursor: pointer;
-            padding: 5px;
-            transition: color 0.3s;
+        .menu-item:hover {
+            background: var(--card-gradient);
+            transform: translateX(4px);
         }
 
-        .menu-trigger:hover {
-            color: #3498db;
-        }
-
-        .dropdown-menu {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background: white;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            border-radius: 8px;
-            padding: 10px 0;
-            min-width: 200px;
-            display: none;
-            animation: slideDown 0.3s ease;
-        }
-
-        .dropdown-menu.show {
-            display: block;
-        }
-
-        .dropdown-menu .user-info {
-            padding: 10px 20px;
-            border-bottom: 1px solid #eee;
-            margin-bottom: 10px;
-        }
-
-        .dropdown-menu .user-name {
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 5px;
-        }
-
-        .dropdown-menu .logout-btn {
+        .menu-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--light-purple);
+            border-radius: 12px;
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 10px 20px;
-            color: #e74c3c;
-            text-decoration: none;
-            transition: background 0.3s;
-            cursor: pointer;
-            border: none;
-            background: none;
-            width: 100%;
-            text-align: left;
-            font-size: 16px;
+            justify-content: center;
+            margin-right: 12px;
+            color: var(--primary-purple);
+            font-size: 18px;
+            transition: all 0.3s ease;
         }
 
-        .dropdown-menu .logout-btn:hover {
-            background: #f8f9fa;
-        }
-
-        .welcome-section {
-            text-align: center;
-            padding: 50px 20px;
-            background: linear-gradient(135deg, #3498db, #2980b9);
+        .menu-item:hover .menu-icon {
+            background: var(--primary-purple);
             color: white;
-            border-radius: 10px;
+            transform: rotate(10deg);
+        }
+
+        .menu-item span {
+            flex: 1;
+            font-weight: 500;
+            font-size: 15px;
+        }
+
+        .menu-indicator {
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+            color: var(--primary-purple);
+        }
+
+        .menu-item:hover .menu-indicator {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .menu-badge {
+            background: #ff4081;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 500;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        .logout {
+            border-top: 1px solid rgba(0,0,0,0.05);
+            margin-top: 8px;
+            padding-top: 12px;
+        }
+
+        .logout .menu-icon {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        .logout:hover .menu-icon {
+            background: #ef4444;
+            color: white;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 80px auto 0; /* Adjusted back to original margin */
+            position: relative;
+            z-index: 1;
+            transition: filter 0.3s ease;
+        }
+
+        .main-content.blur {
+            filter: blur(5px);
+            pointer-events: none;
+        }
+
+        /* Balance Cards */
+        .balance-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
             margin-bottom: 30px;
             position: relative;
+            z-index: 2;
+        }
+
+        .balance-card {
+            background: linear-gradient(135deg, #b39dfb, #9575cd);
+            border-radius: 20px;
+            padding: 25px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 4px 20px rgba(179, 157, 251, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .balance-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255,255,255,0.2), rgba(255,255,255,0));
             z-index: 1;
         }
 
-        .welcome-section h1 {
-            font-size: 36px;
-            margin-bottom: 15px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        .balance-icon {
+            background: rgba(255, 255, 255, 0.3);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            z-index: 2;
         }
 
-        .welcome-section p {
-            font-size: 18px;
-            opacity: 0.9;
+        .balance-info {
+            flex: 1;
+            z-index: 2;
         }
 
-        .content-section {
-            background: white;
-            padding: 30px;
+        .balance-label {
+            display: block;
+            font-size: 14px;
+            color: rgba(0, 0, 0, 0.8);
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .balance-amount {
+            display: block;
+            font-size: 28px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 5px;
+        }
+
+        .balance-conversion {
+            background: rgba(0, 0, 0, 0.1);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            z-index: 2;
+        }
+
+        .conversion-label {
+            display: block;
+            text-align: center;
+            font-weight: 600;
+            color: #000;
+        }
+
+        /* Plans Section */
+        .plans-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: var(--primary-purple);
+        }
+
+        .plan-tabs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            border: none;
             border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background: white;
+            color: #666;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
 
-        @keyframes slideDown {
+        .tab-btn.active {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(126, 87, 194, 0.15);
+        }
+
+        .plan-card.weekly {
+            border: 2px solid var(--primary-purple);
+        }
+
+        .plan-card.weekly .plan-header {
+            background: var(--light-purple);
+            margin: -25px -25px 20px -25px;
+            padding: 20px 25px;
+        }
+
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .plan-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(126, 87, 194, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .plan-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(126, 87, 194, 0.15);
+        }
+
+        .plan-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient);
+        }
+
+        .plan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .plan-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .plan-price {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-purple);
+        }
+
+        .plan-features {
+            list-style: none;
+            margin-bottom: 25px;
+        }
+
+        .plan-feature {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            color: #666;
+        }
+
+        .plan-feature i {
+            color: var(--success-green);
+            font-size: 14px;
+        }
+
+        .plan-button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            background: var(--gradient);
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .plan-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(126, 87, 194, 0.3);
+        }
+
+        .plan-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Active Plans Section */
+        .active-plans {
+            margin-bottom: 30px;
+        }
+
+        .active-plan-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 20px rgba(126, 87, 194, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .active-plan-info {
+                display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .active-plan-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--light-purple);
+            border-radius: 12px;
+            display: flex;
+                align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--primary-purple);
+        }
+
+        .active-plan-details h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .active-plan-details p {
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Animations */
+        @keyframes slideIn {
             from {
                 opacity: 0;
                 transform: translateY(-10px);
@@ -147,86 +595,4132 @@
             }
         }
 
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Responsive Design */
         @media (max-width: 768px) {
-            .navbar {
+            .header-section {
+                padding: 15px;
+                border-radius: 0 0 20px 20px;
+            }
+
+            .main-content {
+                margin-top: 120px;
                 padding: 15px;
             }
+
+            .menu-options {
+                top: 90px;
+                width: 280px;
+            }
+
+            .balance-section {
+                grid-template-columns: 1fr;
+                margin-top: 20px;
+            }
+
+            .plans-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .active-plan-card {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .active-plan-info {
+                flex-direction: column;
+            }
+        }
+
+        /* Modal Styles */
+        .transaction-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(5px);
+        }
+
+            .modal-content {
+            background: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            margin: 20px;
+            z-index: 10000;
+            }
+
+            .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10001;
+            border-radius: 20px 20px 0 0;
+            }
+
+            .modal-body {
+            padding: 20px;
+            position: relative;
+            z-index: 10000;
+        }
+
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            position: sticky;
+            bottom: 0;
+            background: white;
+            border-radius: 0 0 20px 20px;
+            z-index: 10001;
+        }
+       /* Active Plans Modal Specific Styles */
+#activePlansModal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    z-index: 99999;
+    overflow-y: auto;
+}
+
+#activePlansModal .modal-content {
+    position: relative;
+    background: #fff;
+    margin: 2rem auto;
+    padding: 0;
+    width: 90%;
+    max-width: 800px;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    z-index: 100000;
+}
+
+#activePlansModal .modal-header {
+    position: sticky;
+    top: 0;
+    background: #fff;
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+    border-radius: 1rem 1rem 0 0;
+    z-index: 100001;
+}
+
+#activePlansModal .modal-body {
+    position: relative;
+    padding: 1rem;
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+    z-index: 100000;
+}
+
+#activePlansModal .modal-footer {
+    position: sticky;
+    bottom: 0;
+    background: #fff;
+    padding: 1rem;
+    border-top: 1px solid #eee;
+    border-radius: 0 0 1rem 1rem;
+    z-index: 100001;
+}
+
+#activePlansModal .active-plan-card {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.3s ease;
+    border: 1px solid rgba(126, 87, 194, 0.1);
+}
+        #activePlansModal .active-plan-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(126, 87, 194, 0.1);
+            border-color: var(--primary-purple);
+        }
+
+        #activePlansModal .active-plan-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        #activePlansModal .active-plan-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--light-purple);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--primary-purple);
+        }
+
+        #activePlansModal .active-plan-details h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        #activePlansModal .active-plan-details p {
+            font-size: 14px;
+            color: #666;
+        }
+
+        #activePlansModal .active-plan-stats {
+            display: flex;
+            gap: 20px;
+        }
+
+        #activePlansModal .active-plan-stats .stat {
+            text-align: right;
+        }
+
+        #activePlansModal .active-plan-stats .label {
+            display: block;
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+
+        #activePlansModal .active-plan-stats .value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .cancel-btn {
+            padding: 10px 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            color: #666;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .cancel-btn:hover {
+            background: #f5f5f5;
+            border-color: #ccc;
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-header h2 i {
+            color: var(--primary-purple);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #666;
+            cursor: pointer;
+            padding: 5px;
+            transition: color 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: var(--primary-purple);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary-purple);
+            outline: none;
+        }
+
+        .payment-options {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .payment-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Transaction List Styles */
+        .transaction-list {
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .transaction-card {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            gap: 15px;
+        }
+
+        .transaction-status {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+
+        .transaction-status.pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .transaction-status.completed {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .transaction-status.rejected {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .transaction-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--light-purple);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-purple);
+            font-size: 18px;
+        }
+
+        .transaction-info {
+            flex: 1;
+        }
+
+        .transaction-info h3 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .transaction-info p {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .transaction-amount {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .transaction-amount.positive {
+            color: var(--success-green);
+        }
+
+        .transaction-amount.negative {
+            color: var(--error-red);
+        }
+
+        /* Referral Modal Styles */
+        .referral-card {
+            background: var(--light-purple);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .referral-icon {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-purple);
+            font-size: 24px;
+        }
+
+        .referral-info h3 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .referral-code-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .referral-code-container span {
+            background: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-weight: 500;
+            color: var(--primary-purple);
+        }
+
+        .copy-btn {
+            background: none;
+            border: none;
+            color: var(--primary-purple);
+            cursor: pointer;
+            padding: 5px;
+            transition: transform 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .rewards-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .reward-card {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .reward-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--light-purple);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-purple);
+            font-size: 18px;
+        }
+
+        .reward-text h4 {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .reward-text p {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .share-section {
+            margin-bottom: 20px;
+        }
+
+        .share-description {
+            font-size: 14px;
+            color: #666;
+            margin: 10px 0;
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .share-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+                border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .share-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .share-btn.whatsapp {
+            background: #25D366;
+            color: white;
+        }
+
+        .share-btn.telegram {
+            background: #0088cc;
+            color: white;
+        }
+
+        .team-section {
+            margin-top: 20px;
+        }
+
+        .team-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-card i {
+            width: 40px;
+            height: 40px;
+            background: var(--light-purple);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-purple);
+            font-size: 18px;
+        }
+
+        .stat-info span {
+            display: block;
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .stat-info p {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .team-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .team-member {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .member-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .member-info i {
+            width: 40px;
+            height: 40px;
+            background: var(--light-purple);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-purple);
+            font-size: 18px;
+        }
+
+        .member-info h4 {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .member-info p {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .member-status {
+            font-size: 12px;
+            color: var(--success-green);
+            font-weight: 500;
+        }
+
+        /* Support Modal Styles */
+        .support-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .support-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .support-card i {
+            width: 50px;
+            height: 50px;
+            background: var(--light-purple);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-purple);
+            font-size: 24px;
+            margin: 0 auto 15px;
+        }
+
+        .support-card h3 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .support-card p {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .support-card a {
+            color: var(--primary-purple);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .support-card a:hover {
+            text-decoration: underline;
+        }
+
+        /* Empty State Styles */
+        .no-transactions,
+        .no-referrals,
+        .no-active-plans {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+        }
+
+        .no-transactions i,
+        .no-referrals i,
+        .no-active-plans i {
+            font-size: 48px;
+            color: #ddd;
+            margin-bottom: 15px;
+        }
+
+        .no-transactions p,
+        .no-referrals p,
+        .no-active-plans p {
+            font-size: 16px;
+        }
+
+        /* Add modern form styles */
+        .modern-form {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .modern-form .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .modern-form label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .modern-form input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .modern-form input:focus {
+            border-color: var(--primary-purple);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(126, 87, 194, 0.1);
+            outline: none;
+        }
+
+        .modern-form .payment-section {
+            background: var(--light-purple);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+                text-align: center;
+        }
+
+        .modern-form .payment-section h3 {
+            color: var(--primary-purple);
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .modern-form .payment-section p {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .modern-form .razorpay-link {
+            display: inline-block;
+            background: var(--gradient);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(126, 87, 194, 0.2);
+        }
+
+        .modern-form .razorpay-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(126, 87, 194, 0.3);
+        }
+
+        .modern-form .razorpay-link i {
+            margin-right: 8px;
+        }
+
+        .modern-form .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 20px 0;
+            color: #666;
+        }
+
+        .modern-form .divider::before,
+        .modern-form .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modern-form .divider span {
+            padding: 0 10px;
+            font-size: 14px;
+        }
+
+        .modern-form .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .modern-form .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(126, 87, 194, 0.3);
+        }
+
+        .modern-form .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Popup Message Styles */
+        .popup-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            background: white;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            z-index: 9999999;
+            animation: slideIn 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            pointer-events: none;
+            max-width: 400px;
+        }
+
+        .popup-message.success {
+            border-left: 4px solid var(--success-green);
+        }
+
+        .popup-message.error {
+            border-left: 4px solid var(--error-red);
+        }
+
+        .popup-message i {
+            font-size: 20px;
+        }
+
+        .popup-message.success i {
+            color: var(--success-green);
+        }
+
+        .popup-message.error i {
+            color: var(--error-red);
+        }
+
+        .popup-message p {
+            margin: 0;
+            font-weight: 500;
+            color: #333;
+            font-size: 14px;
+        }
+
+        /* Add these new styles */
+        .payment-methods-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .payment-method-card {
+            background: white;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .payment-method-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary-purple);
+            box-shadow: 0 4px 15px rgba(126, 87, 194, 0.1);
+        }
+
+        .payment-method-card.selected {
+            border-color: var(--primary-purple);
+            background: var(--light-purple);
+        }
+
+        .payment-method-card img {
+            height: 30px;
+            object-fit: contain;
+        }
+
+        .payment-method-card i {
+            font-size: 24px;
+            color: var(--primary-purple);
+        }
+
+        .payment-method-card span {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .payment-details-section {
+            background: var(--light-purple);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            animation: slideIn 0.3s ease;
+        }
+
+        .payment-details-section h3 {
+            color: var(--primary-purple);
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .modern-form .form-group input {
+            background: white;
+            border: 2px solid #eee;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .modern-form .form-group input:focus {
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 0 3px rgba(126, 87, 194, 0.1);
+        }
+
+        .modern-form .submit-btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modern-form .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(126, 87, 194, 0.3);
+        }
+
+        .modern-form .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .payment-method-card i {
+            font-size: 32px;
+            color: var(--primary-purple);
+            margin-bottom: 8px;
+        }
+
+        .payment-method-card:hover i {
+            transform: scale(1.1);
+            transition: transform 0.3s ease;
+        }
+
+        .payment-method-card.selected i {
+            color: white;
+            background: var(--primary-purple);
+                padding: 10px;
+            border-radius: 50%;
+        }
+
+        .balance-display {
+            margin-bottom: 30px;
+        }
+
+        .balance-card {
+            background: linear-gradient(135deg, #b39dfb, #9575cd);
+            border-radius: 20px;
+            padding: 25px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 4px 20px rgba(179, 157, 251, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .balance-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255,255,255,0.2), rgba(255,255,255,0));
+            z-index: 1;
+        }
+
+        .balance-icon {
+            background: rgba(255, 255, 255, 0.3);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            z-index: 2;
+        }
+
+        .balance-info {
+            flex: 1;
+            z-index: 2;
+        }
+
+        .balance-label {
+            display: block;
+            font-size: 14px;
+            color: rgba(0, 0, 0, 0.8);
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .balance-amount {
+            display: block;
+            font-size: 28px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 5px;
+        }
+
+        .balance-conversion {
+            background: rgba(0, 0, 0, 0.1);
+            padding: 8px 15px;
+            border-radius: 20px;
+                font-size: 14px;
+            z-index: 2;
+        }
+
+        .conversion-label {
+            display: block;
+            text-align: center;
+            font-weight: 600;
+            color: #000;
+        }
+
+        /* Contact & Support Modal Styles */
+        .contact-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            width: 90%;
+            max-width: 400px;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translate(-50%, -60%);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, -50%);
+                opacity: 1;
+            }
+        }
+
+        .contact-modal-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .contact-modal-header h3 {
+            color: var(--primary-purple);
+            font-size: 24px;
+            margin: 0;
+            background: linear-gradient(45deg, var(--primary-purple), #9c27b0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .contact-modal-header p {
+            color: #666;
+            margin: 10px 0 0;
+                font-size: 14px;
+            }
+
+        .contact-options {
+            display: grid;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .contact-option {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .contact-option:hover {
+            transform: translateY(-2px);
+            background: #fff;
+            box-shadow: 0 5px 15px rgba(126, 87, 194, 0.1);
+        }
+
+        .contact-option i {
+            font-size: 24px;
+            margin-right: 15px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: #fff;
+            color: var(--primary-purple);
+            box-shadow: 0 4px 10px rgba(126, 87, 194, 0.1);
+        }
+
+        .contact-option.telegram i {
+            color: #0088cc;
+        }
+
+        .contact-option.gmail i {
+            color: #EA4335;
+        }
+
+        .contact-option-content {
+            flex: 1;
+        }
+
+        .contact-option-content h4 {
+            margin: 0;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .contact-option-content p {
+            margin: 5px 0 0;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .contact-modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #666;
+            cursor: pointer;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .contact-modal-close:hover {
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 999;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Logout Confirmation Modal Styles */
+        .logout-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            width: 90%;
+            max-width: 400px;
+            animation: modalSlideIn 0.3s ease;
+            text-align: center;
+        }
+
+        .logout-modal-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--light-purple);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+
+        .logout-modal-icon i {
+            font-size: 40px;
+            color: var(--primary-purple);
+            animation: pulseIcon 2s infinite;
+        }
+
+        @keyframes pulseIcon {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .logout-modal h3 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .logout-modal p {
+            color: #666;
+            margin-bottom: 25px;
+            font-size: 15px;
+        }
+
+        .logout-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .logout-btn {
+            padding: 12px 30px;
+            border-radius: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 15px;
+            border: none;
+        }
+
+        .logout-btn.confirm {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .logout-btn.cancel {
+            background: #f5f5f5;
+            color: #666;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .logout-btn.confirm:hover {
+            box-shadow: 0 5px 15px rgba(126, 87, 194, 0.3);
+        }
+
+        .logout-btn.cancel:hover {
+            background: #eeeeee;
+        }
+
+        /* Notification Styles */
+        #notificationContainer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .modern-notification {
+            background: white;
+            border-radius: 12px;
+            padding: 15px 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            min-width: 300px;
+            max-width: 400px;
+            animation: slideIn 0.3s ease forwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modern-notification.success {
+            border-left: 4px solid #10b981;
+        }
+
+        .modern-notification.error {
+            border-left: 4px solid #ef4444;
+        }
+
+        .modern-notification.warning {
+            border-left: 4px solid #f59e0b;
+        }
+
+        .modern-notification i {
+            font-size: 20px;
+        }
+
+        .modern-notification.success i {
+            color: #10b981;
+        }
+
+        .modern-notification.error i {
+            color: #ef4444;
+        }
+
+        .modern-notification.warning i {
+            color: #f59e0b;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .notification-message {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .notification-timer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: rgba(0, 0, 0, 0.1);
+            animation: timer 3s linear forwards;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            padding: 5px;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+
+        .notification-close:hover {
+            color: #666;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        @keyframes timer {
+            from {
+                width: 100%;
+            }
+            to {
+                width: 0%;
+            }
+        }
+
+        .referral-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .action-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            color: white;
+        }
+
+        .action-btn i {
+            font-size: 1.2em;
+        }
+
+        .copy-btn {
+            background: #4CAF50;
+        }
+
+        .copy-btn:hover {
+            background: #45a049;
+        }
+
+        .whatsapp-btn {
+            background: #25D366;
+        }
+
+        .whatsapp-btn:hover {
+            background: #22c55e;
+        }
+
+        .telegram-btn {
+            background: #0088cc;
+        }
+
+        .telegram-btn:hover {
+            background: #0077b3;
+        }
+
+        .share-btn {
+            background: #6c757d;
+        }
+
+        .share-btn:hover {
+            background: #5a6268;
+        }
+
+        @media (max-width: 768px) {
+            .referral-actions {
+                flex-direction: column;
+            }
             
-            .logo {
-                font-size: 20px;
+            .action-btn {
+                width: 100%;
+                justify-content: center;
             }
         }
     </style>
 </head>
 <body>
-    <div class="dashboard-container">
-        <nav class="navbar">
-            <div class="logo">
-                <i class="fas fa-cube"></i>
-                Advanced Products
-            </div>
-            <div class="user-menu">
-                <button class="menu-trigger" onclick="toggleMenu()">
-                    <i class="fas fa-ellipsis-v"></i>
-                </button>
-                <div class="dropdown-menu" id="userMenu">
-                    <div class="user-info">
-                        <div class="user-name" id="userFullName"></div>
+    <!-- Header Section -->
+    <header class="header-section">
+        <div class="header-content">
+            <div class="brand-section">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                        </div>
+                <div class="welcome-text">
+                    <h1 class="welcome-title">Welcome to Advanced Products</h1>
+                    <div class="user-name">
+                        <span id="userFullName">Loading...</span>
+                        <span class="badge">Premium</span>
                     </div>
-                    <button class="logout-btn" onclick="logout()">
-                        <i class="fas fa-sign-out-alt"></i>
-                        Logout
+                </div>
+            </div>
+            <div class="menu-container">
+                <button class="menu-toggle" onclick="toggleUserMenu()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="menu-options" id="userMenu">
+                    <a href="#" class="menu-item" onclick="openDepositForm()">
+                        <div class="menu-icon">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                        <span>Deposit</span>
+                        <i class="fas fa-chevron-right menu-indicator"></i>
+                    </a>
+                    <a href="#" class="menu-item" onclick="openWithdrawModal()">
+                        <div class="menu-icon">
+                            <i class="fas fa-money-bill-wave"></i>
+                                </div>
+                        <span>Withdraw</span>
+                        <i class="fas fa-chevron-right menu-indicator"></i>
+                    </a>
+                    <a href="#" class="menu-item" onclick="viewTransactionHistory()">
+                        <div class="menu-icon">
+                            <i class="fas fa-history"></i>
+                                    </div>
+                        <span>Transaction History</span>
+                        <i class="fas fa-chevron-right menu-indicator"></i>
+                    </a>
+                    <a href="#" class="menu-item" onclick="viewActivePlans()">
+                        <div class="menu-icon">
+                                    <i class="fas fa-crown"></i>
+                                    </div>
+                        <span>Active Plans</span>
+                        <i class="fas fa-chevron-right menu-indicator"></i>
+                    </a>
+                    <a href="#" class="menu-item" onclick="openReferralProgram()">
+                        <div class="menu-icon">
+                            <i class="fas fa-gift"></i>
+                                </div>
+                        <span>Refer & Earn</span>
+                        <i class="fas fa-chevron-right menu-indicator"></i>
+                    </a>
+                    <a href="#" class="menu-item" onclick="showContactModal()">
+                        <div class="menu-icon">
+                            <i class="fas fa-headset"></i>
+                                </div>
+                        <span>Contact & Support</span>
+                        <i class="fas fa-chevron-right menu-indicator"></i>
+                    </a>
+                    <a href="#" class="menu-item logout" onclick="handleLogout()">
+                        <div class="menu-icon">
+                            <i class="fas fa-sign-out-alt"></i>
+                            </div>
+                        <span>Logout</span>
+                        <i class="fas fa-chevron-right menu-indicator"></i>
+                    </a>
+                        </div>
+                        </div>
+                        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Balance Section -->
+        <section class="balance-section">
+            <div class="balance-card">
+                <div class="balance-icon">
+                            <i class="fas fa-wallet"></i>
+                                </div>
+                <div class="balance-info">
+                    <div class="balance-label">Wallet Balance</div>
+                    <div class="balance-amount" id="walletBalance">₹0</div>
+                                    </div>
+                                    </div>
+            <div class="balance-card">
+                <div class="balance-icon">
+                    <i class="fas fa-coins"></i>
+                                </div>
+                <div class="balance-info">
+                    <div class="balance-label">Points Balance</div>
+                    <div class="balance-amount" id="pointsBalance">0</div>
+                                </div>
+                            </div>
+            <div class="balance-card">
+                <div class="balance-icon">
+                    <i class="fas fa-gift"></i>
+                        </div>
+                <div class="balance-info">
+                    <div class="balance-label">Referral Earnings</div>
+                    <div class="balance-amount" id="referralEarnings">₹0</div>
+                        </div>
+            </div>
+        </section>
+
+        <!-- Plans Section -->
+        <section class="plans-section">
+            <h2 class="section-title">
+                <i class="fas fa-crown"></i>
+                Available Plans
+            </h2>
+            
+            <!-- Plan Tabs -->
+            <div class="plan-tabs">
+                <button class="tab-btn active" onclick="switchTab('monthly')">Monthly Plans</button>
+                <button class="tab-btn" onclick="switchTab('weekly')">Weekly Plans</button>
+            </div>
+
+            <!-- Monthly Plans -->
+            <div class="plans-grid" id="monthlyPlans">
+                <!-- Basic Plan -->
+                <div class="plan-card">
+                    <div class="plan-header">
+                        <h3 class="plan-name">Basic Plan</h3>
+                        <div class="plan-price">₹299</div>
+                    </div>
+                    <ul class="plan-features">
+                        <li class="plan-feature">
+                            <i class="fas fa-check"></i>
+                            Daily Points: 340
+                        </li>
+                        <li class="plan-feature">
+                            <i class="fas fa-check"></i>
+                            Duration: 30 Days
+                        </li>
+                        <li class="plan-feature">
+                            <i class="fas fa-check"></i>
+                            Total Points: 10,200
+                        </li>
+                    </ul>
+                    <button class="plan-button" onclick="purchasePlan('basic', 'Basic Plan', 299)">
+                        Purchase Now
+                    </button>
+                </div>
+
+                <!-- Premium Plan -->
+                <div class="plan-card">
+                    <div class="plan-header">
+                        <h3 class="plan-name">Premium Plan</h3>
+                        <div class="plan-price">₹720</div>
+                    </div>
+                    <ul class="plan-features">
+                        <li class="plan-feature">
+                            <i class="fas fa-check"></i>
+                            Daily Points: 740
+                        </li>
+                        <li class="plan-feature">
+                            <i class="fas fa-check"></i>
+                            Duration: 30 Days
+                        </li>
+                        <li class="plan-feature">
+                            <i class="fas fa-check"></i>
+                            Total Points: 22,200
+                        </li>
+                    </ul>
+                    <button class="plan-button" onclick="purchasePlan('premium', 'Premium Plan', 720)">
+                        Purchase Now
+                    </button>
+                </div>
+
+                <!-- VIP Plan -->
+                <div class="plan-card">
+                    <div class="plan-header">
+                        <h3 class="plan-name">VIP Plan</h3>
+                        <div class="plan-price">₹1200</div>
+                        </div>
+                    <ul class="plan-features">
+                        <li class="plan-feature">
+                            <i class="fas fa-check"></i>
+                            Daily Points: 1240
+                        </li>
+                        <li class="plan-feature">
+                            <i class="fas fa-check"></i>
+                            Duration: 30 Days
+                        </li>
+                        <li class="plan-feature">
+                            <i class="fas fa-check"></i>
+                            Total Points: 37,200
+                        </li>
+                    </ul>
+                    <button class="plan-button" onclick="purchasePlan('vip', 'VIP Plan', 1200)">
+                        Purchase Now
+                    </button>
+                </div>
+
+                <!-- Elite Plan -->
+                <div class="plan-card">
+                    <div class="plan-header">
+                        <h3 class="plan-name">Elite Plan</h3>
+                        <div class="plan-price">₹1499</div>
+                                </div>
+                    <ul class="plan-features">
+                        <li class="plan-feature">
+                            <i class="fas fa-check"></i>
+                            Daily Points: 1940
+                        </li>
+                        <li class="plan-feature">
+                            <i class="fas fa-check"></i>
+                            Duration: 30 Days
+                        </li>
+                        <li class="plan-feature">
+                            <i class="fas fa-check"></i>
+                            Total Points: 58,200
+                        </li>
+                    </ul>
+                    <button class="plan-button" onclick="purchasePlan('elite', 'Elite Plan', 1499)">
+                        Purchase Now
+                    </button>
+                                    </div>
+
+                <!-- Royal Plan -->
+                <div class="plan-card">
+                    <div class="plan-header">
+                        <h3 class="plan-name">Royal Plan</h3>
+                        <div class="plan-price">₹2000</div>
+                                    </div>
+                    <ul class="plan-features">
+                        <li class="plan-feature">
+                            <i class="fas fa-check"></i>
+                            Daily Points: 3340
+                        </li>
+                        <li class="plan-feature">
+                            <i class="fas fa-check"></i>
+                            Duration: 30 Days
+                        </li>
+                        <li class="plan-feature">
+                            <i class="fas fa-check"></i>
+                            Total Points: 100,200
+                        </li>
+                    </ul>
+                    <button class="plan-button" onclick="purchasePlan('royal', 'Royal Plan', 2000)">
+                        Purchase Now
+                    </button>
+                                </div>
+
+                <!-- Diamond Plan -->
+                <div class="plan-card">
+                    <div class="plan-header">
+                        <h3 class="plan-name">Diamond Plan</h3>
+                        <div class="plan-price">₹3400</div>
+                                </div>
+                    <ul class="plan-features">
+                        <li class="plan-feature">
+                            <i class="fas fa-check"></i>
+                            Daily Points: 6640
+                        </li>
+                        <li class="plan-feature">
+                            <i class="fas fa-check"></i>
+                            Duration: 30 Days
+                        </li>
+                        <li class="plan-feature">
+                            <i class="fas fa-check"></i>
+                            Total Points: 199,200
+                        </li>
+                    </ul>
+                    <button class="plan-button" onclick="purchasePlan('diamond', 'Diamond Plan', 3400)">
+                        Purchase Now
+                    </button>
+                            </div>
+            </div>
+
+            <!-- Weekly Plans -->
+            <div class="plans-grid" id="weeklyPlans" style="display: none;">
+                <!-- Weekly Basic Plan -->
+                <div class="plan-card weekly">
+                    <div class="plan-header">
+                        <h3 class="plan-name">Weekly Basic</h3>
+                        <div class="plan-price">₹540</div>
+                        </div>
+                    <ul class="plan-features">
+                        <li class="plan-feature">
+                            <i class="fas fa-check"></i>
+                            Daily Points: 500
+                        </li>
+                        <li class="plan-feature">
+                            <i class="fas fa-check"></i>
+                            Duration: 7 Days
+                        </li>
+                        <li class="plan-feature">
+                            <i class="fas fa-check"></i>
+                            Total Points: 3,500
+                        </li>
+                    </ul>
+                    <button class="plan-button" onclick="purchasePlan('weekly_basic', 'Weekly Basic', 540)">
+                        Purchase Now
+                    </button>
+                </div>
+
+                <!-- Weekly Advanced Plan -->
+                <div class="plan-card weekly">
+                    <div class="plan-header">
+                        <h3 class="plan-name">Weekly Advanced</h3>
+                        <div class="plan-price">₹1240</div>
+                    </div>
+                    <ul class="plan-features">
+                        <li class="plan-feature">
+                            <i class="fas fa-check"></i>
+                            Daily Points: 1640
+                        </li>
+                        <li class="plan-feature">
+                            <i class="fas fa-check"></i>
+                            Duration: 7 Days
+                        </li>
+                        <li class="plan-feature">
+                            <i class="fas fa-check"></i>
+                            Total Points: 11,480
+                        </li>
+                    </ul>
+                    <button class="plan-button" onclick="purchasePlan('weekly_advanced', 'Weekly Advanced', 1240)">
+                        Purchase Now
+                    </button>
+                </div>
+
+                <!-- Weekly Premium Plan -->
+                <div class="plan-card weekly">
+                    <div class="plan-header">
+                        <h3 class="plan-name">Weekly Premium</h3>
+                        <div class="plan-price">₹1799</div>
+                    </div>
+                    <ul class="plan-features">
+                        <li class="plan-feature">
+                            <i class="fas fa-check"></i>
+                            Daily Points: 2740
+                        </li>
+                        <li class="plan-feature">
+                            <i class="fas fa-check"></i>
+                            Duration: 7 Days
+                        </li>
+                        <li class="plan-feature">
+                            <i class="fas fa-check"></i>
+                            Total Points: 19,180
+                        </li>
+                    </ul>
+                    <button class="plan-button" onclick="purchasePlan('weekly_premium', 'Weekly Premium', 1799)">
+                        Purchase Now
                     </button>
                 </div>
             </div>
-        </nav>
-
-        <section class="welcome-section">
-            <h1>Welcome to Advanced Products</h1>
-            <p>Your trusted platform for innovative solutions</p>
         </section>
 
-        <section class="content-section">
-            <h2>Your Dashboard</h2>
-            <p>This is your personalized dashboard. More features coming soon!</p>
-        </section>
+        <!-- Active Plans Modal -->
+        <div id="activePlansModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2><i class="fas fa-clock"></i> Active Plans</h2>
+                    <button class="close-btn" onclick="closeActivePlansModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="activePlansList">
+                        <!-- Active plans will be dynamically added here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="cancel-btn" onclick="closeActivePlansModal()">Cancel</button>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <script>
-        // Check authentication on page load
-        window.onload = function() {
-            const token = localStorage.getItem('token');
-            const user = JSON.parse(localStorage.getItem('user'));
+    <!-- Deposit Modal -->
+    <div class="transaction-modal" id="depositModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-wallet"></i> Deposit Funds</h2>
+                <button class="close-btn" onclick="closeDepositForm()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="depositForm" class="modern-form" onsubmit="handleDepositSubmission(event)">
+                    <div class="payment-section">
+                        <h3>Make Payment</h3>
+                        <p>Click the button below to make your payment through Razorpay</p>
+                        <a href="https://razorpay.me/@ypsmart" target="_blank" class="razorpay-link">
+                            <i class="fas fa-credit-card"></i> Pay via Razorpay
+                        </a>
+                    </div>
 
-            if (!token || !user) {
+                    <div class="divider">
+                        <span>After Payment</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="depositName">Full Name</label>
+                        <input type="text" id="depositName" placeholder="Enter your full name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="depositPhone">Phone Number</label>
+                        <input type="tel" id="depositPhone" placeholder="Enter your phone number" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="depositAmount">Amount</label>
+                        <input type="number" id="depositAmount" min="100" placeholder="Enter amount" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="utrNumber">UTR Number</label>
+                        <input type="text" id="utrNumber" placeholder="Enter UTR number after payment" required>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-check"></i> Submit Deposit Request
+                    </button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="cancel-btn" onclick="closeDepositForm()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Withdrawal Modal -->
+    <div class="transaction-modal" id="withdrawModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Withdraw Funds</h2>
+                <button class="close-button" onclick="closeWithdrawModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+                                </div>
+            <div class="modal-body">
+                <div class="balance-display">
+                    <div class="balance-card">
+                        <div class="balance-icon">
+                            <i class="fas fa-wallet"></i>
+                                </div>
+                        <div class="balance-info">
+                            <span class="balance-label">Available Balance</span>
+                            <span class="balance-amount" id="withdrawBalance">₹0</span>
+                                </div>
+                        <div class="balance-conversion">
+                            <span class="conversion-label">1 Point = ₹1</span>
+                            </div>
+                            </div>
+                </div>
+                <form id="withdrawForm" class="modern-form" onsubmit="handleWithdrawalSubmission(event)">
+                            <div class="form-group">
+                        <label for="withdrawalName">Full Name</label>
+                        <input type="text" id="withdrawalName" placeholder="Enter your full name" required>
+                            </div>
+                            <div class="form-group">
+                        <label for="withdrawalPhone">Phone Number</label>
+                        <input type="tel" id="withdrawalPhone" placeholder="Enter your phone number" required>
+                            </div>
+                            <div class="form-group">
+                        <label for="withdrawalAmount">Amount</label>
+                        <input type="number" id="withdrawalAmount" min="500" placeholder="Enter amount (min. ₹500)" required>
+                    </div>
+
+                    <div class="payment-section">
+                        <h3>Select Payment Method</h3>
+                        <div class="payment-methods-grid">
+                            <div class="payment-method-card" onclick="selectPaymentMethod('phonepe')" data-method="phonepe">
+                                        <i class="fas fa-mobile-alt"></i>
+                                <span>PhonePe</span>
+                            </div>
+                            <div class="payment-method-card" onclick="selectPaymentMethod('paytm')" data-method="paytm">
+                                        <i class="fas fa-wallet"></i>
+                                <span>Paytm</span>
+                            </div>
+                            <div class="payment-method-card" onclick="selectPaymentMethod('gpay')" data-method="gpay">
+                                        <i class="fab fa-google-pay"></i>
+                                <span>Google Pay</span>
+                                </div>
+                            <div class="payment-method-card" onclick="selectPaymentMethod('bank')" data-method="bank">
+                                <i class="fas fa-university"></i>
+                                <span>Bank Transfer</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="payment-details-section" id="upiDetails" style="display: none;">
+                        <div class="form-group">
+                            <label for="upiId">UPI ID / Phone Number</label>
+                            <input type="text" id="upiId" placeholder="Enter UPI ID or phone number">
+                        </div>
+                    </div>
+
+                    <div class="payment-details-section" id="bankDetails" style="display: none;">
+                        <div class="form-group">
+                            <label for="accountName">Account Holder Name</label>
+                            <input type="text" id="accountName" placeholder="Enter account holder name">
+                        </div>
+                                <div class="form-group">
+                                    <label for="accountNumber">Account Number</label>
+                            <input type="text" id="accountNumber" placeholder="Enter account number">
+                                </div>
+                                <div class="form-group">
+                                    <label for="ifscCode">IFSC Code</label>
+                            <input type="text" id="ifscCode" placeholder="Enter IFSC code">
+                                </div>
+                                </div>
+
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-check"></i> Submit Withdrawal Request
+                    </button>
+                </form>
+                            </div>
+            <div class="modal-footer">
+                <button class="cancel-btn" onclick="closeWithdrawModal()">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+
+    <!-- Refer & Earn Modal -->
+    <div class="transaction-modal" id="referralModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-gift"></i> Refer & Earn</h2>
+                <button class="close-btn" onclick="closeReferralModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="referral-card">
+                    <div class="referral-icon">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <div class="referral-info">
+                        <h3>Your Referral Code</h3>
+                        <div class="referral-code-container">
+                            <span id="referralCode">Loading...</span>
+                            <div class="referral-actions">
+                                <button onclick="copyReferralCode()" class="action-btn copy-btn">
+                                    <i class="fas fa-copy"></i> Copy Code
+                                </button>
+                                <button onclick="shareOnWhatsApp()" class="action-btn whatsapp-btn">
+                                    <i class="fab fa-whatsapp"></i> Share on WhatsApp
+                                </button>
+                                <button onclick="shareOnTelegram()" class="action-btn telegram-btn">
+                                    <i class="fab fa-telegram"></i> Share on Telegram
+                                </button>
+                                <button onclick="shareReferral()" class="action-btn share-btn">
+                                    <i class="fas fa-share-alt"></i> Share
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rewards-section">
+                    <div class="reward-card">
+                        <div class="reward-icon">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <div class="reward-text">
+                            <h4>For Your Friend</h4>
+                            <p>They get ₹50 instant bonus</p>
+                        </div>
+                    </div>
+                    <div class="reward-card">
+                        <div class="reward-icon">
+                            <i class="fas fa-gift"></i>
+                        </div>
+                        <div class="reward-text">
+                            <h4>For You</h4>
+                            <p>You get ₹100 per referral</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="share-section">
+                    <h3>Share with Friends</h3>
+                    <p class="share-description">
+                        Invite your friends to join Advanced Products! They'll get ₹50 bonus points instantly, and you'll earn ₹100 for each successful referral. Share now and start earning!
+                    </p>
+                    <div class="share-buttons">
+                        <button onclick="shareOnWhatsApp()" class="share-btn whatsapp">
+                            <i class="fab fa-whatsapp"></i> WhatsApp
+                        </button>
+                        <button onclick="shareOnTelegram()" class="share-btn telegram">
+                            <i class="fab fa-telegram"></i> Telegram
+                        </button>
+                    </div>
+                </div>
+
+                <div class="team-section">
+                    <h3>My Team</h3>
+                    <div class="team-stats">
+                        <div class="stat-card">
+                            <i class="fas fa-users"></i>
+                            <div class="stat-info">
+                                <span id="totalReferrals">0</span>
+                                <p>Total Referrals</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-coins"></i>
+                            <div class="stat-info">
+                                <span id="totalEarnings">₹0</span>
+                                <p>Total Earnings</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="team-list" id="teamList">
+                        <div class="loading-message">Loading your team...</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="cancel-btn" onclick="closeReferralModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Support Modal -->
+    <div class="transaction-modal" id="supportModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-headset"></i> Contact Support</h2>
+                <button class="close-btn" onclick="closeSupportModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="support-info">
+                    <div class="support-card">
+                        <i class="fas fa-phone"></i>
+                        <h3>Phone Support</h3>
+                        <p>Call us at: <a href="tel:+1234567890">+123 456 7890</a></p>
+                    </div>
+                    <div class="support-card">
+                        <i class="fas fa-envelope"></i>
+                        <h3>Email Support</h3>
+                        <p>Email us at: <a href="mailto:support@advancedproducts.com">support@advancedproducts.com</a></p>
+                    </div>
+                    <div class="support-card">
+                        <i class="fas fa-clock"></i>
+                        <h3>Working Hours</h3>
+                        <p>24/7 Support Available</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="cancel-btn" onclick="closeSupportModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transaction History Modal -->
+    <div class="transaction-modal" id="transactionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-history"></i> Transaction History</h2>
+                <button class="close-btn" onclick="closeTransactionModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="transaction-list" id="transactionList">
+                    <!-- Transactions will be dynamically added here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="cancel-btn" onclick="closeTransactionModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Define plans variable at the top
+        const plans = {
+            monthly: [
+                { id: 'plan1', name: 'Basic Plan', price: 299, dailyPoints: 340 },
+                { id: 'plan2', name: 'Standard Plan', price: 720, dailyPoints: 740 },
+                { id: 'plan3', name: 'Premium Plan', price: 1200, dailyPoints: 1240 },
+                { id: 'plan4', name: 'Elite Plan', price: 1499, dailyPoints: 1940 },
+                { id: 'plan5', name: 'Ultimate Plan', price: 2000, dailyPoints: 3340 }
+            ],
+            weekly: [
+                { id: 'plan6', name: 'Weekly Basic', price: 540, dailyPoints: 500 },
+                { id: 'plan7', name: 'Weekly Premium', price: 1240, dailyPoints: 1640 },
+                { id: 'plan8', name: 'Weekly Elite', price: 1799, dailyPoints: 2740 }
+            ]
+        };
+
+        // Initialize all components after DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize notifications
+            if (typeof initializeNotifications === 'function') {
+                initializeNotifications();
+            }
+            
+            // Add event listeners to elements that exist
+            const logoutModalOverlay = document.getElementById('logoutModalOverlay');
+            if (logoutModalOverlay) {
+                logoutModalOverlay.addEventListener('click', cancelLogout);
+            }
+
+            const contactModalOverlay = document.getElementById('contactModalOverlay');
+            if (contactModalOverlay) {
+                contactModalOverlay.addEventListener('click', closeContactModal);
+            }
+
+            // Initialize other components
+            if (typeof loadUserData === 'function') {
+                loadUserData();
+            }
+            if (typeof loadReferralCode === 'function') {
+                loadReferralCode();
+            }
+            if (typeof loadActivePlans === 'function') {
+                loadActivePlans();
+            }
+
+            // Add event listeners for modals
+            const modals = document.querySelectorAll('.transaction-modal');
+            modals.forEach(modal => {
+                if (modal) {
+                    modal.addEventListener('click', (e) => {
+                        if (e.target === modal) {
+                            modal.style.display = 'none';
+                        }
+                    });
+                }
+            });
+
+            // Add event listeners for modal content
+            const modalContents = document.querySelectorAll('.modal-content');
+            modalContents.forEach(content => {
+                if (content) {
+                    content.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                    });
+                }
+            });
+
+            // Add event listeners for payment method selection
+            const paymentMethodCards = document.querySelectorAll('.payment-method-card');
+            paymentMethodCards.forEach(card => {
+                if (card) {
+                    card.addEventListener('click', () => {
+                        const method = card.getAttribute('data-method');
+                        if (method) {
+                            selectPaymentMethod(method);
+                        }
+                    });
+                }
+            });
+
+            // Add event listeners for plan purchase buttons
+            const planButtons = document.querySelectorAll('.plan-purchase-btn');
+            planButtons.forEach(button => {
+                if (button) {
+                    button.addEventListener('click', () => {
+                        const planId = button.getAttribute('data-plan-id');
+                        const planName = button.getAttribute('data-plan-name');
+                        const planPrice = button.getAttribute('data-plan-price');
+                        
+                        if (planId && planName && planPrice) {
+                            // Convert planPrice to number and validate
+                            const price = Number(planPrice);
+                            if (!isNaN(price)) {
+                                purchasePlan(planId, planName, price);
+                            } else {
+                                console.error('Invalid plan price:', planPrice);
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'Invalid plan price. Please try again.',
+                                    confirmButtonColor: '#7e57c2'
+                                });
+                            }
+                        } else {
+                            console.error('Missing plan data:', { planId, planName, planPrice });
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Invalid plan data. Please try again.',
+                                confirmButtonColor: '#7e57c2'
+                            });
+                        }
+                    });
+                }
+            });
+
+            // Add event listeners for contact modal
+            const contactModal = document.getElementById('contactModal');
+            if (contactModal) {
+                const closeButton = contactModal.querySelector('.contact-modal-close');
+                if (closeButton) {
+                    closeButton.addEventListener('click', closeContactModal);
+                }
+            }
+        });
+
+        // Check authentication
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
                 window.location.href = '/login';
                 return;
             }
 
-            // Display user's name
-            document.getElementById('userFullName').textContent = user.fullName;
-        };
+            try {
+                await loadUserData();
+                await loadActivePlans();
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to load dashboard data',
+                    confirmButtonColor: '#7e57c2'
+                });
+            }
+        });
 
-        function toggleMenu() {
+        // Load user data
+        async function loadUserData() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/user/profile', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) throw new Error('Failed to load user data');
+
+                const data = await response.json();
+                const user = data.user;
+
+                // Update UI with user data
+                document.getElementById('userFullName').textContent = user.fullName;
+                document.getElementById('walletBalance').textContent = `₹${user.walletBalance || 0}`;
+                document.getElementById('pointsBalance').textContent = user.points || 0;
+                document.getElementById('referralEarnings').textContent = `₹${user.referralEarnings || 0}`;
+
+                // Check if user has any active plans
+                const hasActivePlans = user.activePlans && user.activePlans.length > 0;
+                const premiumBadge = document.querySelector('.user-name .badge');
+                
+                if (hasActivePlans) {
+                    premiumBadge.style.display = 'inline-block';
+                        } else {
+                    premiumBadge.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                throw error;
+            }
+        }
+
+        // Load active plans
+        async function loadActivePlans() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/user/points', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) throw new Error('Failed to load active plans');
+
+                const data = await response.json();
+                const activePlans = data.activePlans || [];
+
+                const activePlansList = document.getElementById('activePlansList');
+                activePlansList.innerHTML = '';
+
+                if (activePlans.length === 0) {
+                    activePlansList.innerHTML = `
+                        <div class="no-active-plans">
+                            <i class="fas fa-clock"></i>
+                            <p>No active plans</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                activePlans.forEach(plan => {
+                    const endDate = new Date(plan.endDate);
+                    const daysLeft = Math.ceil((endDate - new Date()) / (1000 * 60 * 60 * 24));
+
+                    const planCard = document.createElement('div');
+                    planCard.className = 'active-plan-card';
+                    planCard.innerHTML = `
+                        <div class="active-plan-info">
+                            <div class="active-plan-icon">
+                                <i class="fas fa-crown"></i>
+                            </div>
+                            <div class="active-plan-details">
+                                <h3>${plan.planName}</h3>
+                                <p>${daysLeft} days remaining</p>
+                            </div>
+                        </div>
+                        <div class="active-plan-stats">
+                            <div class="stat">
+                                <span class="label">Daily Points</span>
+                                <span class="value">${plan.dailyPoints}</span>
+                            </div>
+                            <div class="stat">
+                                <span class="label">End Date</span>
+                                <span class="value">${endDate.toLocaleDateString()}</span>
+                            </div>
+                        </div>
+                    `;
+                    activePlansList.appendChild(planCard);
+                });
+            } catch (error) {
+                console.error('Error loading active plans:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to load active plans',
+                    confirmButtonColor: '#7e57c2'
+                });
+            }
+        }
+
+        // Toggle user menu
+        function toggleUserMenu() {
             const menu = document.getElementById('userMenu');
             menu.classList.toggle('show');
         }
 
         // Close menu when clicking outside
-        document.addEventListener('click', function(event) {
+        document.addEventListener('click', (e) => {
             const menu = document.getElementById('userMenu');
-            const trigger = document.querySelector('.menu-trigger');
+            const menuToggle = document.querySelector('.menu-toggle');
             
-            if (!menu.contains(event.target) && !trigger.contains(event.target)) {
+            if (!menu.contains(e.target) && !menuToggle.contains(e.target)) {
                 menu.classList.remove('show');
             }
         });
 
-        function logout() {
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            window.location.href = '/login';
+        // Handle deposit form submission
+        async function handleDepositSubmission(event) {
+            event.preventDefault();
+            
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Processing...';
+
+            try {
+                const token = localStorage.getItem('token');
+                const formData = {
+                    amount: document.getElementById('depositAmount').value,
+                    utrNumber: document.getElementById('utrNumber').value,
+                    userName: document.getElementById('depositName').value,
+                    phoneNumber: document.getElementById('depositPhone').value
+                };
+
+                const response = await fetch('/api/transactions/deposit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to submit deposit request');
+                }
+
+                const data = await response.json();
+                showPopupMessage('Deposit request submitted successfully');
+                closeDepositForm();
+                await loadUserData();
+            } catch (error) {
+                console.error('Deposit error:', error);
+                showPopupMessage(error.message || 'Failed to submit deposit request', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Deposit Request';
+            }
         }
+
+        // Handle withdrawal form submission
+        async function handleWithdrawalSubmission(event) {
+            event.preventDefault();
+            
+            try {
+                // Get the selected payment method
+                const selectedPaymentMethod = document.querySelector('.payment-method-card.selected');
+                if (!selectedPaymentMethod) {
+                    throw new Error('Please select a payment method');
+                }
+
+                // Get the payment method from the data-method attribute
+                const paymentMode = selectedPaymentMethod.getAttribute('data-method');
+                console.log('Selected payment mode:', paymentMode);
+
+                // Map payment modes to backend expected values
+                const paymentModeMap = {
+                    'phonepe': 'upi',
+                    'paytm': 'upi',
+                    'gpay': 'upi',
+                    'bank': 'bank'
+                };
+
+                const backendPaymentMode = paymentModeMap[paymentMode];
+                console.log('Backend payment mode:', backendPaymentMode);
+
+                // Get form values
+                const amount = document.getElementById('withdrawalAmount').value;
+                const userName = document.getElementById('withdrawalName').value;
+                const phoneNumber = document.getElementById('withdrawalPhone').value;
+
+                // Basic validation
+            if (!amount || amount < 500) {
+                    throw new Error('Minimum withdrawal amount is ₹500');
+                }
+
+                if (!userName || !phoneNumber) {
+                    throw new Error('Please fill in all required fields');
+                }
+
+                // Get payment details based on selected method
+                let paymentDetails;
+                if (backendPaymentMode === 'bank') {
+                    const accountName = document.getElementById('accountName').value;
+                const accountNumber = document.getElementById('accountNumber').value;
+                const ifscCode = document.getElementById('ifscCode').value;
+
+                    if (!accountName || !accountNumber || !ifscCode) {
+                        throw new Error('Please fill in all bank account details');
+                    }
+
+                    // Validate account number (should be 9-18 digits)
+                    if (!/^\d{9,18}$/.test(accountNumber)) {
+                        throw new Error('Please enter a valid account number (9-18 digits)');
+                    }
+
+                    // Validate IFSC code (should be 11 characters)
+                    if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(ifscCode.toUpperCase())) {
+                        throw new Error('Please enter a valid IFSC code');
+                    }
+
+                    paymentDetails = {
+                        accountName: accountName.trim(),
+                        accountNumber: accountNumber.trim(),
+                        ifscCode: ifscCode.trim().toUpperCase(),
+                        type: 'bank'
+                    };
+                } else {
+                    const upiId = document.getElementById('upiId').value;
+                    if (!upiId) {
+                        throw new Error('Please enter your UPI ID or phone number');
+                    }
+
+                    // Format UPI ID based on payment app
+                    let formattedUpiId = upiId.trim();
+                    
+                    // If it's a phone number, format it according to the payment app
+                    if (/^[0-9]{10}$/.test(upiId)) {
+                        switch (paymentMode) {
+                            case 'phonepe':
+                                formattedUpiId = `${upiId}@ybl`;
+                                break;
+                            case 'paytm':
+                                formattedUpiId = `${upiId}@paytm`;
+                                break;
+                            case 'gpay':
+                                formattedUpiId = `${upiId}@okbank`;
+                                break;
+                        }
+                    }
+
+                    paymentDetails = {
+                        upiId: formattedUpiId,
+                        paymentApp: paymentMode,
+                        type: 'upi'
+                    };
+                }
+
+                // Get token from localStorage
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    throw new Error('Please log in to continue');
+                }
+
+                // Prepare the request body
+                const requestBody = {
+                    amount: Number(amount),
+                    userName: userName.trim(),
+                    phoneNumber: phoneNumber.trim(),
+                    paymentMode: backendPaymentMode,
+                    paymentDetails: paymentDetails
+                };
+
+                // Log the request body for debugging
+                console.log('Request Body:', requestBody);
+
+                // Make the API call
+                const response = await fetch('/api/transactions/withdrawal', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || data.details || 'Failed to submit withdrawal request');
+                }
+
+                // Show success message
+                showPopupMessage('Withdrawal request submitted successfully');
+                
+                // Close the modal
+                document.getElementById('withdrawModal').style.display = 'none';
+                document.querySelector('.main-content').classList.remove('blur');
+                
+                // Refresh user data
+                await loadUserData();
+                
+                // Reset the form
+                event.target.reset();
+                document.querySelectorAll('.payment-method-card').forEach(card => {
+                    card.classList.remove('selected');
+                });
+                document.querySelectorAll('.payment-details-section').forEach(section => {
+                    section.style.display = 'none';
+                });
+            } catch (error) {
+                console.error('Withdrawal error:', error);
+                showPopupMessage(error.message, 'error');
+            }
+        }
+
+        // Handle payment mode change
+        function handlePaymentModeChange() {
+            const paymentMode = document.querySelector('input[name="paymentMode"]:checked').value;
+            const upiDetails = document.getElementById('upiDetails');
+            const bankDetails = document.getElementById('bankDetails');
+
+            if (paymentMode === 'upi') {
+                upiDetails.style.display = 'block';
+                bankDetails.style.display = 'none';
+            } else {
+                upiDetails.style.display = 'none';
+                bankDetails.style.display = 'block';
+            }
+        }
+
+        // Purchase plan
+        async function purchasePlan(planId, planName, planPrice) {
+            try {
+                // Validate inputs
+                if (!planId || !planName || planPrice === undefined || planPrice === null) {
+                    throw new Error('Invalid plan details');
+                }
+
+                // Convert planPrice to number if it's a string
+                planPrice = Number(planPrice);
+                if (isNaN(planPrice)) {
+                    throw new Error('Invalid plan price');
+                }
+
+                // Show confirmation dialog
+                const result = await Swal.fire({
+                    icon: 'question',
+                    title: 'Confirm Purchase',
+                    html: `
+                        <div style="text-align: center;">
+                            <div style="margin-bottom: 20px;">
+                                <i class="fas fa-shopping-cart" style="font-size: 48px; color: #7e57c2;"></i>
+                            </div>
+                            <p style="font-size: 16px; color: #666;">
+                                Are you sure you want to purchase the <strong>${planName}</strong> plan?
+                            </p>
+                            <div style="background: #f8f9fa; padding: 15px; border-radius: 12px; margin: 15px 0;">
+                                <p style="font-size: 24px; color: #7e57c2; font-weight: 600; margin: 0;">
+                                    ₹${planPrice}
+                                </p>
+                                <p style="font-size: 14px; color: #666; margin: 5px 0 0;">
+                                    One-time payment
+                                </p>
+                            </div>
+                            <div style="text-align: left; background: #f8f9fa; padding: 15px; border-radius: 12px; margin-bottom: 15px;">
+                                <p style="font-size: 14px; color: #666; margin: 0;">
+                                    <i class="fas fa-info-circle" style="color: #7e57c2;"></i>
+                                    By confirming, you agree to our <a href="#" onclick="showTermsAndConditions(event)" style="color: #7e57c2; text-decoration: underline;">terms and conditions</a>.
+                                </p>
+                            </div>
+                        </div>
+                    `,
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, Purchase Now',
+                    confirmButtonColor: '#7e57c2',
+                    cancelButtonText: 'Cancel',
+                    cancelButtonColor: '#666',
+                    customClass: {
+                        confirmButton: 'swal2-confirm',
+                        cancelButton: 'swal2-cancel'
+                    }
+                });
+
+                if (!result.isConfirmed) {
+                    return; // User clicked Cancel
+                }
+
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/plans/purchase', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        planId,
+                        planName,
+                        planPrice
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    // Check if the error is due to already having the plan
+                    if (data.error && data.error.includes('already have')) {
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Plan Already Active',
+                            html: `
+                                <div style="text-align: center;">
+                                    <div style="margin-bottom: 20px;">
+                                        <i class="fas fa-check-circle" style="font-size: 48px; color: #7e57c2;"></i>
+                                    </div>
+                                    <p style="font-size: 16px; color: #666;">
+                                        You already have the <strong>${planName}</strong> plan active.
+                                    </p>
+                                    <p style="font-size: 14px; color: #888; margin-top: 10px;">
+                                        Please wait until your current plan expires before purchasing again.
+                                    </p>
+                                </div>
+                            `,
+                            confirmButtonText: 'View Active Plans',
+                            confirmButtonColor: '#7e57c2',
+                            showCancelButton: true,
+                            cancelButtonText: 'Close',
+                            cancelButtonColor: '#666'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                viewActivePlans();
+                            }
+                        });
+                        return;
+                    }
+                    throw new Error(data.error || 'Failed to purchase plan');
+                }
+                
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    html: `
+                        <div style="text-align: center;">
+                            <div style="margin-bottom: 20px;">
+                                <i class="fas fa-crown" style="font-size: 48px; color: #7e57c2;"></i>
+                            </div>
+                            <p style="font-size: 16px; color: #666;">
+                                Successfully purchased <strong>${planName}</strong>
+                            </p>
+                            <p style="font-size: 14px; color: #888; margin-top: 10px;">
+                                Your plan benefits are now active!
+                            </p>
+                        </div>
+                    `,
+                    confirmButtonText: 'View Active Plans',
+                    confirmButtonColor: '#7e57c2',
+                    showCancelButton: true,
+                    cancelButtonText: 'Close',
+                    cancelButtonColor: '#666'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        viewActivePlans();
+                    }
+                });
+
+                await loadUserData();
+                await loadActivePlans();
+            } catch (error) {
+                console.error('Plan purchase error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    html: `
+                        <div style="text-align: center;">
+                            <div style="margin-bottom: 20px;">
+                                <i class="fas fa-exclamation-circle" style="font-size: 48px; color: #ef4444;"></i>
+                            </div>
+                            <p style="font-size: 16px; color: #666;">
+                                ${error.message || 'Failed to purchase plan'}
+                            </p>
+                            <p style="font-size: 14px; color: #888; margin-top: 10px;">
+                                Please try again or contact support if the issue persists.
+                            </p>
+                        </div>
+                    `,
+                    confirmButtonText: 'Contact Support',
+                    confirmButtonColor: '#7e57c2',
+                    showCancelButton: true,
+                    cancelButtonText: 'Close',
+                    cancelButtonColor: '#666'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        showContactModal();
+                    }
+                });
+            }
+        }
+
+        // Add new function to show terms and conditions
+        async function showTermsAndConditions(event) {
+            event.preventDefault();
+            await Swal.fire({
+                title: 'Terms and Conditions',
+                html: `
+                    <div style="text-align: left; max-height: 70vh; overflow-y: auto; padding: 10px;">
+                        <div style="background: #fff; padding: 20px; border-radius: 12px; border: 1px solid #eee; margin-bottom: 15px;">
+                            <h4 style="color: #333; margin-bottom: 15px; font-size: 16px;">
+                                <i class="fas fa-file-contract" style="color: #7e57c2;"></i> Terms & Conditions
+                            </h4>
+                            <div style="font-size: 13px; color: #666; line-height: 1.6;">
+                                <p style="margin-bottom: 12px;">Welcome to Advanced Products! By purchasing our premium plans, you're embarking on an exciting journey towards financial growth and success.</p>
+                                <p style="margin-bottom: 12px;">Our cutting-edge platform offers unparalleled opportunities for earning and growth, backed by state-of-the-art technology and expert support.</p>
+                                <p style="margin-bottom: 12px;">As a valued member of our community, you'll enjoy exclusive benefits, premium features, and access to our elite support system.</p>
+                                <p style="margin-bottom: 12px;">We strive to maintain the highest standards of service quality and user satisfaction, ensuring a seamless experience for all our members.</p>
+                                <p style="margin-bottom: 12px;">Please note that while we endeavor to process all withdrawal requests promptly, certain circumstances beyond our control may occasionally affect the processing time or availability of withdrawal services.</p>
+                                <p style="margin-bottom: 12px;">By proceeding with your purchase, you acknowledge and accept that all investments carry inherent risks, and you are making this decision based on your own assessment and understanding.</p>
+                                <p style="margin-bottom: 12px;">We reserve the right to modify our services and terms at any time, with or without prior notice, to ensure the best possible experience for our users.</p>
+                                <p style="margin-bottom: 12px;">Your satisfaction is our top priority, and we're committed to providing you with the best possible service and support throughout your journey with us.</p>
+                                </div>
+                            </div>
+                        <div style="background: #fff3e0; padding: 15px; border-radius: 12px; border: 1px solid #ffe0b2;">
+                            <p style="font-size: 13px; color: #e65100; margin: 0;">
+                                <i class="fas fa-exclamation-triangle" style="color: #e65100;"></i>
+                                <strong>Important Notice:</strong> While we strive to maintain uninterrupted service, please be aware that withdrawal services may be temporarily unavailable during system maintenance or due to technical issues. We recommend maintaining a diversified investment portfolio and not relying solely on our platform for financial needs.
+                            </p>
+                    </div>
+                    </div>
+                `,
+                confirmButtonText: 'I Understand',
+                confirmButtonColor: '#7e57c2',
+                showCancelButton: false,
+                customClass: {
+                    confirmButton: 'swal2-confirm'
+                }
+            });
+        }
+
+        // View transaction history
+        async function viewTransactionHistory() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/transactions', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) throw new Error('Failed to load transactions');
+
+                const data = await response.json();
+                const transactions = data.transactions;
+
+                const transactionList = document.getElementById('transactionList');
+                transactionList.innerHTML = '';
+
+                if (transactions.length === 0) {
+                    transactionList.innerHTML = `
+                        <div class="no-transactions">
+                            <i class="fas fa-history"></i>
+                            <p>No transactions found</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                transactions.forEach(transaction => {
+                    const transactionCard = document.createElement('div');
+                    transactionCard.className = 'transaction-card';
+                    
+                    let statusHtml = '';
+                    if (transaction.type === 'deposit') {
+                        statusHtml = `<span class="transaction-status ${transaction.status}">${transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)}</span>`;
+                    }
+
+                    transactionCard.innerHTML = `
+                        <div class="transaction-icon">
+                            <i class="fas ${getTransactionIcon(transaction.type)}"></i>
+                            </div>
+                        <div class="transaction-info">
+                            <h3>${getTransactionTitle(transaction.type)}</h3>
+                            <p>${new Date(transaction.createdAt).toLocaleString()}</p>
+                            </div>
+                        <div class="transaction-amount ${getTransactionAmountClass(transaction.type, transaction.status)}">
+                            ${getTransactionAmount(transaction.type, transaction.amount, transaction.status, transaction.planName)}
+                        </div>
+                        ${statusHtml}
+                    `;
+                    transactionList.appendChild(transactionCard);
+                });
+
+                document.getElementById('transactionModal').style.display = 'flex';
+            } catch (error) {
+                console.error('Error loading transactions:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to load transactions',
+                    confirmButtonColor: '#7e57c2'
+                });
+            }
+        }
+
+        // Helper functions for transaction display
+        function getTransactionIcon(type) {
+            switch (type) {
+                case 'deposit': return 'fa-wallet';
+                case 'withdrawal': return 'fa-money-bill-wave';
+                case 'purchase': return 'fa-shopping-cart';
+                case 'points_earned': return 'fa-coins';
+                case 'referral_bonus': return 'fa-gift';
+                default: return 'fa-exchange-alt';
+            }
+        }
+
+        function getTransactionTitle(type) {
+            switch (type) {
+                case 'deposit': return 'Deposit';
+                case 'withdrawal': return 'Withdrawal';
+                case 'purchase': return 'Plan Purchase';
+                case 'points_earned': return 'Points Earned';
+                case 'referral_bonus': return 'Referral Bonus';
+                default: return 'Transaction';
+            }
+        }
+
+        function getTransactionAmountClass(type, status) {
+            if (type === 'deposit') {
+                switch (status) {
+                    case 'pending': return 'pending';
+                    case 'completed': return 'positive';
+                    case 'rejected': return 'negative';
+                    default: return '';
+                }
+            }
+            
+            switch (type) {
+                case 'deposit':
+                case 'points_earned':
+                case 'referral_bonus':
+                    return 'positive';
+                case 'withdrawal':
+                case 'purchase':
+                    return 'negative';
+                default:
+                    return '';
+            }
+        }
+
+        function getTransactionAmount(type, amount, status, planName) {
+            if (type === 'deposit') {
+                switch (status) {
+                    case 'pending': return `₹${amount} (Pending)`;
+                    case 'completed': return `+₹${amount}`;
+                    case 'rejected': return `-₹${amount}`;
+                    default: return `₹${amount}`;
+                }
+            } else if (type === 'withdrawal') {
+                switch (status) {
+                    case 'pending': return `₹${amount} (Pending)`;
+                    case 'completed': return `-₹${amount} (Completed)`;
+                    case 'rejected': return `₹${amount} (Failed)`;
+                    case 'failed': return `₹${amount} (Failed)`;
+                    default: return `₹${amount}`;
+                }
+            } else if (type === 'purchase') {
+                return `-₹${amount}`;
+            } else if (type === 'points_earned') {
+                // Show points with plan name if available
+                if (planName) {
+                    return `+${amount} points (${planName})`;
+                }
+                return `+${amount} points`;
+            }
+            
+            const prefix = type === 'withdrawal' ? '-' : '+';
+            const symbol = type === 'points_earned' ? 'P' : '₹';
+            return `${prefix}${symbol}${amount}`;
+        }
+
+        // Modal functions
+        function closeAllModals() {
+            const modals = document.querySelectorAll('.transaction-modal');
+            modals.forEach(modal => {
+                modal.style.display = 'none';
+            });
+            document.getElementById('userMenu').classList.remove('show');
+            document.querySelector('.main-content').classList.remove('blur');
+        }
+
+        function openDepositForm() {
+            closeAllModals();
+            document.getElementById('depositModal').style.display = 'flex';
+            document.querySelector('.main-content').classList.add('blur');
+        }
+
+        function closeDepositForm() {
+            document.getElementById('depositModal').style.display = 'none';
+            document.getElementById('depositForm').reset();
+            document.querySelector('.main-content').classList.remove('blur');
+        }
+
+        function openWithdrawModal() {
+            closeAllModals();
+            document.getElementById('withdrawModal').style.display = 'flex';
+            document.querySelector('.main-content').classList.add('blur');
+            
+            // Get the points balance from the points balance card
+            const pointsBalance = document.getElementById('pointsBalance').textContent;
+            document.getElementById('withdrawBalance').textContent = `₹${pointsBalance}`;
+        }
+
+        function closeWithdrawModal() {
+            document.getElementById('withdrawModal').style.display = 'none';
+            document.getElementById('withdrawForm').reset();
+            document.querySelector('.main-content').classList.remove('blur');
+        }
+
+        function openReferralProgram() {
+            closeAllModals();
+            document.getElementById('referralModal').style.display = 'flex';
+            document.querySelector('.main-content').classList.add('blur');
+            loadReferralCode();
+        }
+
+        function closeReferralModal() {
+            document.getElementById('referralModal').style.display = 'none';
+            document.querySelector('.main-content').classList.remove('blur');
+        }
+
+        function openSupportModal() {
+            closeAllModals();
+            document.getElementById('supportModal').style.display = 'flex';
+            document.querySelector('.main-content').classList.add('blur');
+        }
+
+        function closeSupportModal() {
+            document.getElementById('supportModal').style.display = 'none';
+            document.querySelector('.main-content').classList.remove('blur');
+        }
+
+        function closeTransactionModal() {
+            document.getElementById('transactionModal').style.display = 'none';
+            document.querySelector('.main-content').classList.remove('blur');
+        }
+
+        function viewActivePlans() {
+            closeAllModals();
+            document.getElementById('activePlansModal').style.display = 'flex';
+            loadActivePlans();
+        }
+
+        function closeActivePlansModal() {
+            document.getElementById('activePlansModal').style.display = 'none';
+        }
+
+        // Referral functions
+        async function loadReferralCode() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    window.location.href = '/login.html';
+                    return;
+                }
+
+                const response = await fetch('/api/user/referral-code', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to load referral code');
+                }
+
+                const data = await response.json();
+                const referralCodeElement = document.getElementById('referralCode');
+                
+                if (referralCodeElement) {
+                    referralCodeElement.textContent = data.referralCode;
+                }
+
+                // Load team data after successfully loading referral code
+                await loadTeamData();
+            } catch (error) {
+                console.error('Error loading referral code:', error);
+                const notification = document.createElement('div');
+                notification.className = 'modern-notification error';
+                notification.innerHTML = `
+                    <div class="notification-content">
+                        <div class="notification-icon">
+                            <i class="fas fa-exclamation-circle"></i>
+                        </div>
+                        <div class="notification-text">
+                            <h4>Error</h4>
+                            <p>Failed to load referral code</p>
+                            <div class="notification-timer">
+                                <i class="fas fa-times-circle"></i>
+                                <span>Please try again</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="notification-close" onclick="this.parentElement.remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                document.body.appendChild(notification);
+                
+                // Remove notification after 5 seconds
+                setTimeout(() => {
+                    notification.remove();
+                }, 5000);
+            }
+        }
+
+        async function loadTeamData() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    window.location.href = '/login.html';
+                    return;
+                }
+
+                const response = await fetch('/api/user/referrals', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to load team data');
+                }
+
+                const data = await response.json();
+                const teamList = document.getElementById('teamList');
+                
+                if (!teamList) {
+                    console.error('Team list element not found');
+                    return;
+                }
+
+                teamList.innerHTML = '';
+
+                if (!data.referrals || data.referrals.length === 0) {
+                    teamList.innerHTML = `
+                        <div class="no-team-members">
+                            <i class="fas fa-users"></i>
+                            <p>No team members yet</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                data.referrals.forEach(member => {
+                    const memberCard = document.createElement('div');
+                    memberCard.className = 'team-member-card';
+                    memberCard.innerHTML = `
+                        <div class="member-info">
+                            <div class="member-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="member-details">
+                                <h3>${member.fullName || 'Anonymous'}</h3>
+                                <p>Joined: ${new Date(member.joinDate).toLocaleDateString()}</p>
+                            </div>
+                        </div>
+                        <div class="member-stats">
+                            <div class="stat">
+                                <span class="label">Status</span>
+                                <span class="value ${member.status || 'active'}">${member.status || 'Active'}</span>
+                            </div>
+                        </div>
+                    `;
+                    teamList.appendChild(memberCard);
+                });
+
+                // Update total earnings if available
+                const totalEarningsElement = document.getElementById('totalEarnings');
+                if (totalEarningsElement && data.totalEarnings !== undefined) {
+                    totalEarningsElement.textContent = `₹${data.totalEarnings}`;
+                }
+            } catch (error) {
+                console.error('Error loading team data:', error);
+                const teamList = document.getElementById('teamList');
+                if (teamList) {
+                    teamList.innerHTML = `
+                        <div class="error-message">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <p>Failed to load team data. Please try again later.</p>
+                        </div>
+                    `;
+                }
+            }
+        }
+
+        // Add this function to handle referral code copy
+        function copyReferralCode() {
+            const referralCode = document.getElementById('referralCode').textContent;
+            navigator.clipboard.writeText(referralCode).then(() => {
+                // Create a modern notification for success
+                const notification = document.createElement('div');
+                notification.className = 'modern-notification success';
+                notification.innerHTML = `
+                    <div class="notification-content">
+                        <div class="notification-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="notification-text">
+                            <h4>Success</h4>
+                            <p>Referral code copied to clipboard</p>
+                            <div class="notification-timer">
+                                <i class="fas fa-check"></i>
+                                <span>Ready to share</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="notification-close" onclick="this.parentElement.remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                document.body.appendChild(notification);
+                
+                // Remove notification after 3 seconds
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                // Create a modern notification for error
+                const notification = document.createElement('div');
+                notification.className = 'modern-notification error';
+                notification.innerHTML = `
+                    <div class="notification-content">
+                        <div class="notification-icon">
+                            <i class="fas fa-exclamation-circle"></i>
+                        </div>
+                        <div class="notification-text">
+                            <h4>Error</h4>
+                            <p>Failed to copy referral code</p>
+                            <div class="notification-timer">
+                                <i class="fas fa-times-circle"></i>
+                                <span>Please try again</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="notification-close" onclick="this.parentElement.remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                document.body.appendChild(notification);
+                
+                // Remove notification after 5 seconds
+                setTimeout(() => {
+                    notification.remove();
+                }, 5000);
+            });
+        }
+
+        function shareOnWhatsApp() {
+            const referralCode = document.getElementById('referralCode').textContent;
+            const message = `🎉 Join Advanced Products - Your Gateway to Daily Earnings! 🚀\n\n` +
+                `💎 Use my referral code: ${referralCode}\n\n` +
+                `🎁 You'll get ₹50 bonus instantly!\n` +
+                `💰 I'll earn ₹100 for each successful referral!\n\n` +
+                `✨ Start earning today with Advanced Products!\n` +
+                `🌐 Visit: www.advancedproducts.in`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(message)}`);
+        }
+
+        function shareOnTelegram() {
+            const referralCode = document.getElementById('referralCode').textContent;
+            const message = `🎉 Join Advanced Products - Your Gateway to Daily Earnings! 🚀\n\n` +
+                `💎 Use my referral code: ${referralCode}\n\n` +
+                `🎁 You'll get ₹50 bonus instantly!\n` +
+                `💰 I'll earn ₹100 for each successful referral!\n\n` +
+                `✨ Start earning today with Advanced Products!\n` +
+                `🌐 Visit: www.advancedproducts.in`;
+            window.open(`https://t.me/share/url?url=${encodeURIComponent(message)}`);
+        }
+
+        async function shareReferral() {
+            const referralCode = document.getElementById('referralCode').textContent;
+            const message = `🎉 Join Advanced Products - Your Gateway to Daily Earnings! 🚀\n\n` +
+                `💎 Use my referral code: ${referralCode}\n\n` +
+                `🎁 You'll get ₹50 bonus instantly!\n` +
+                `💰 I'll earn ₹100 for each successful referral!\n\n` +
+                `✨ Start earning today with Advanced Products!\n` +
+                `🌐 Visit: www.advancedproducts.in`;
+
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'Join Advanced Products',
+                        text: message,
+                        url: 'https://www.advancedproducts.in'
+                    });
+                } catch (error) {
+                    console.error('Error sharing:', error);
+                    // Fallback to clipboard if sharing fails
+                    navigator.clipboard.writeText(message).then(() => {
+                        // Create a modern notification for success
+                        const notification = document.createElement('div');
+                        notification.className = 'modern-notification success';
+                        notification.innerHTML = `
+                            <div class="notification-content">
+                                <div class="notification-icon">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="notification-text">
+                                    <h4>Success</h4>
+                                    <p>Share message copied to clipboard</p>
+                                    <div class="notification-timer">
+                                        <i class="fas fa-check"></i>
+                                        <span>Ready to share</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="notification-close" onclick="this.parentElement.remove()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        `;
+                        document.body.appendChild(notification);
+                        
+                        // Remove notification after 3 seconds
+                        setTimeout(() => {
+                            notification.remove();
+                        }, 3000);
+                    }).catch(err => {
+                        console.error('Failed to copy:', err);
+                        // Create a modern notification for error
+                        const notification = document.createElement('div');
+                        notification.className = 'modern-notification error';
+                        notification.innerHTML = `
+                            <div class="notification-content">
+                                <div class="notification-icon">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                </div>
+                                <div class="notification-text">
+                                    <h4>Error</h4>
+                                    <p>Failed to copy share message</p>
+                                    <div class="notification-timer">
+                                        <i class="fas fa-times-circle"></i>
+                                        <span>Please try again</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="notification-close" onclick="this.parentElement.remove()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        `;
+                        document.body.appendChild(notification);
+                        
+                        // Remove notification after 5 seconds
+                        setTimeout(() => {
+                            notification.remove();
+                        }, 5000);
+                    });
+                }
+            } else {
+                // Fallback for browsers that don't support Web Share API
+                navigator.clipboard.writeText(message);
+            }
+        }
+
+        // Logout function
+        async function handleLogout() {
+            document.getElementById('logoutModal').style.display = 'block';
+            document.getElementById('logoutModalOverlay').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            closeAllModals();
+        }
+
+        function cancelLogout() {
+            document.getElementById('logoutModal').style.display = 'none';
+            document.getElementById('logoutModalOverlay').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        async function confirmLogout() {
+            try {
+                localStorage.removeItem('token');
+                showPopupMessage('Logging out...', 'success');
+                setTimeout(() => {
+                    window.location.href = '/login';
+                }, 1000);
+            } catch (error) {
+                console.error('Logout error:', error);
+                showPopupMessage('Failed to logout', 'error');
+            }
+        }
+
+        // Close logout modal when clicking outside
+        const logoutModalOverlay = document.getElementById('logoutModalOverlay');
+        if (logoutModalOverlay) {
+            logoutModalOverlay.addEventListener('click', cancelLogout);
+        }
+
+        // Plan tab switching function
+        function switchTab(tab) {
+            const monthlyPlans = document.getElementById('monthlyPlans');
+            const weeklyPlans = document.getElementById('weeklyPlans');
+            const tabs = document.querySelectorAll('.tab-btn');
+
+            if (tab === 'monthly') {
+                monthlyPlans.style.display = 'grid';
+                weeklyPlans.style.display = 'none';
+                tabs[0].classList.add('active');
+                tabs[1].classList.remove('active');
+            } else {
+                monthlyPlans.style.display = 'none';
+                weeklyPlans.style.display = 'grid';
+                tabs[0].classList.remove('active');
+                tabs[1].classList.add('active');
+            }
+        }
+
+        // Close modals when clicking outside
+        document.addEventListener('click', (e) => {
+            const modals = document.querySelectorAll('.transaction-modal');
+            modals.forEach(modal => {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        });
+
+        // Prevent modal body click from closing modal
+        document.querySelectorAll('.modal-content').forEach(content => {
+            content.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+        });
+
+        // Add this function to handle popup messages
+        function showPopupMessage(message, type = 'success') {
+            // Remove any existing popup messages
+            const existingPopups = document.querySelectorAll('.popup-message');
+            existingPopups.forEach(popup => popup.remove());
+
+            // Create new popup message
+            const popup = document.createElement('div');
+            popup.className = `popup-message ${type}`;
+            
+            // Set icon based on type
+            const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+            
+            popup.innerHTML = `
+                <i class="fas ${icon}"></i>
+                <p>${message}</p>
+            `;
+
+            // Add to body
+            document.body.appendChild(popup);
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                popup.style.animation = 'slideOut 0.3s ease forwards';
+                setTimeout(() => popup.remove(), 300);
+            }, 3000);
+        }
+
+        // Add slideOut animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideOut {
+                from {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+                to {
+                    opacity: 0;
+                    transform: translateY(-10px);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Add this new function to handle payment method selection
+        function selectPaymentMethod(method) {
+            if (!method) return;
+
+            // Remove selected class from all cards
+            const paymentCards = document.querySelectorAll('.payment-method-card');
+            paymentCards.forEach(card => {
+                if (card) {
+                    card.classList.remove('selected');
+                }
+            });
+
+            // Add selected class to clicked card
+            const selectedCard = event?.currentTarget;
+            if (selectedCard) {
+                selectedCard.classList.add('selected');
+            }
+
+            // Hide all payment detail sections
+            const upiDetails = document.getElementById('upiDetails');
+            const bankDetails = document.getElementById('bankDetails');
+            
+            if (upiDetails) upiDetails.style.display = 'none';
+            if (bankDetails) bankDetails.style.display = 'none';
+
+            // Show relevant payment detail section
+            if (method === 'bank' && bankDetails) {
+                bankDetails.style.display = 'block';
+            } else if (upiDetails) {
+                upiDetails.style.display = 'block';
+            }
+
+            // Debug log
+            console.log('Selected payment method:', method);
+            if (selectedCard) {
+                console.log('Selected card:', selectedCard);
+                console.log('Data method attribute:', selectedCard.getAttribute('data-method'));
+            }
+        }
+
+        // Add these functions to your existing JavaScript
+        function showContactModal() {
+            document.getElementById('contactModal').style.display = 'block';
+            document.getElementById('contactModalOverlay').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeContactModal() {
+            document.getElementById('contactModal').style.display = 'none';
+            document.getElementById('contactModalOverlay').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal when clicking outside
+        const contactModalOverlay = document.getElementById('contactModalOverlay');
+        if (contactModalOverlay) {
+            contactModalOverlay.addEventListener('click', closeContactModal);
+        }
+
+        // List of Indian names (expanded with more combinations)
+        const indianNames = [
+            // First set of names
+            "Aarav Kumar", "Aditi Sharma", "Aishwarya Patel", "Akash Singh", "Amrita Verma",
+            "Ananya Reddy", "Arjun Malhotra", "Avni Gupta", "Bharat Kumar", "Chitra Iyer",
+            "Deepak Sharma", "Esha Singh", "Gaurav Patel", "Harshita Verma", "Ishaan Reddy",
+            "Jaya Malhotra", "Karthik Kumar", "Lakshmi Gupta", "Madhav Sharma", "Neha Singh",
+            "Om Patel", "Priya Verma", "Rahul Reddy", "Sanjana Malhotra", "Tanvi Kumar",
+            "Uday Gupta", "Vanya Sharma", "Yash Singh", "Zara Patel", "Aryan Verma",
+            
+            // Second set of names
+            "Bhavya Reddy", "Chirag Malhotra", "Disha Kumar", "Eshaan Gupta", "Fatima Sharma",
+            "Gita Singh", "Harsh Patel", "Indira Verma", "Jatin Reddy", "Kavita Malhotra",
+            "Lalit Kumar", "Meera Gupta", "Naveen Sharma", "Ojas Singh", "Pooja Patel",
+            "Qasim Verma", "Ravi Reddy", "Sneha Malhotra", "Tarun Kumar", "Uma Gupta",
+            "Varun Sharma", "Wahid Singh", "Xavier Patel", "Yamini Verma", "Zain Reddy",
+            
+            // Third set of names
+            "Aaradhya Sharma", "Bharat Singh", "Chandni Patel", "Dev Kumar", "Ekta Verma",
+            "Firoz Khan", "Gauri Reddy", "Himanshu Malhotra", "Ira Gupta", "Jatin Kumar",
+            "Kavya Sharma", "Lakshay Singh", "Maya Patel", "Nitin Verma", "Ojaswini Reddy",
+            "Pranav Malhotra", "Qamar Khan", "Rahul Gupta", "Sneha Kumar", "Tanay Sharma",
+            "Uma Singh", "Vikram Patel", "Waseem Khan", "Xena Reddy", "Yash Malhotra",
+            
+            // Fourth set of names
+            "Aanya Gupta", "Brijesh Kumar", "Chitra Sharma", "Dinesh Singh", "Esha Patel",
+            "Farhan Khan", "Geeta Verma", "Harshit Reddy", "Isha Malhotra", "Jagdish Gupta",
+            "Kirti Kumar", "Lakshmi Sharma", "Mohan Singh", "Nisha Patel", "Om Prakash",
+            "Pratibha Verma", "Qutub Khan", "Rajesh Reddy", "Suman Malhotra", "Tushar Gupta",
+            "Usha Kumar", "Vijay Sharma", "Wahid Khan", "Xavier Reddy", "Yogesh Malhotra",
+            
+            // Fifth set of names
+            "Aarav Gupta", "Bhavya Kumar", "Chandni Sharma", "Dev Singh", "Ekta Patel",
+            "Firoz Verma", "Gauri Reddy", "Himanshu Malhotra", "Ira Khan", "Jatin Gupta",
+            "Kavya Kumar", "Lakshay Sharma", "Maya Singh", "Nitin Patel", "Ojaswini Verma",
+            "Pranav Reddy", "Qamar Malhotra", "Rahul Khan", "Sneha Gupta", "Tanay Kumar",
+            "Uma Sharma", "Vikram Singh", "Waseem Patel", "Xena Verma", "Yash Reddy"
+        ];
+
+        // Function to generate Indian-style phone number
+        function generatePhoneNumber() {
+            const prefixes = [
+                "9244", "7566", "9926", "9876", "8765", "7654", "6543", "5432", "4321", "3210",
+                "9877", "8766", "7655", "6544", "5433", "4322", "3211", "2100", "9878", "8767",
+                "7656", "6545", "5434", "4323", "3212", "2101", "9879", "8768", "7657", "6546"
+            ];
+            const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+            return prefix + "XXXXX";
+        }
+
+        // Function to create notification HTML
+        function createNotification(type, message, plan = null) {
+            // Remove any existing notifications
+            const existingNotifications = document.querySelectorAll('.modern-notification');
+            existingNotifications.forEach(notification => notification.remove());
+
+            // Create a modern notification
+            const notification = document.createElement('div');
+            notification.className = `modern-notification ${type}`;
+            
+            let icon, title, timerIcon, timerText;
+            switch(type) {
+                case 'success':
+                    icon = 'fa-check-circle';
+                    title = 'Success';
+                    timerIcon = 'fa-check';
+                    timerText = 'Ready to proceed';
+                    break;
+                case 'error':
+                    icon = 'fa-exclamation-circle';
+                    title = 'Error';
+                    timerIcon = 'fa-times-circle';
+                    timerText = 'Please try again';
+                    break;
+                case 'warning':
+                    icon = 'fa-exclamation-triangle';
+                    title = 'Warning';
+                    timerIcon = 'fa-clock';
+                    timerText = 'Action required';
+                    break;
+                default:
+                    icon = 'fa-info-circle';
+                    title = 'Info';
+                    timerIcon = 'fa-info';
+                    timerText = 'New information';
+            }
+
+            let planInfo = '';
+            if (plan && typeof plan === 'object' && plan.price) {
+                planInfo = `<p>Plan: ${plan.name} - ₹${plan.price}</p>`;
+            }
+
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <div class="notification-icon">
+                        <i class="fas ${icon}"></i>
+                    </div>
+                    <div class="notification-text">
+                        <h4>${title}</h4>
+                        <p>${message}</p>
+                        ${planInfo}
+                        <div class="notification-timer">
+                            <i class="fas ${timerIcon}"></i>
+                            <span>${timerText}</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="notification-close" onclick="this.parentElement.remove()">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            document.body.appendChild(notification);
+            
+            // Remove notification after 5 seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
+        }
+
+        // Function to initialize notifications
+        function initializeNotifications() {
+            // Create notification container if it doesn't exist
+            let notificationContainer = document.getElementById('notificationContainer');
+            if (!notificationContainer) {
+                notificationContainer = document.createElement('div');
+                notificationContainer.id = 'notificationContainer';
+                document.body.appendChild(notificationContainer);
+            }
+
+            // Add notification styles if they don't exist
+            if (!document.getElementById('notificationStyles')) {
+                const style = document.createElement('style');
+                style.id = 'notificationStyles';
+                style.textContent = `
+                    #notificationContainer {
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        z-index: 9999;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 10px;
+                    }
+
+                    .modern-notification {
+                        background: white;
+                        border-radius: 12px;
+                        padding: 15px 20px;
+                        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+                        display: flex;
+                        align-items: center;
+                        gap: 15px;
+                        min-width: 300px;
+                        max-width: 400px;
+                        animation: slideIn 0.3s ease forwards;
+                        position: relative;
+                        overflow: hidden;
+                    }
+
+                    .modern-notification.success {
+                        border-left: 4px solid #10b981;
+                    }
+
+                    .modern-notification.error {
+                        border-left: 4px solid #ef4444;
+                    }
+
+                    .modern-notification.warning {
+                        border-left: 4px solid #f59e0b;
+                    }
+
+                    .modern-notification i {
+                        font-size: 20px;
+                    }
+
+                    .modern-notification.success i {
+                        color: #10b981;
+                    }
+
+                    .modern-notification.error i {
+                        color: #ef4444;
+                    }
+
+                    .modern-notification.warning i {
+                        color: #f59e0b;
+                    }
+
+                    .notification-content {
+                        flex: 1;
+                    }
+
+                    .notification-title {
+                        font-weight: 600;
+                        margin-bottom: 5px;
+                        color: #333;
+                    }
+
+                    .notification-message {
+                        font-size: 14px;
+                        color: #666;
+                    }
+
+                    .notification-timer {
+                        position: absolute;
+                        bottom: 0;
+                        left: 0;
+                        height: 3px;
+                        background: rgba(0, 0, 0, 0.1);
+                        animation: timer 3s linear forwards;
+                    }
+
+                    .notification-close {
+                        background: none;
+                        border: none;
+                        color: #999;
+                        cursor: pointer;
+                        padding: 5px;
+                        font-size: 16px;
+                        transition: color 0.3s ease;
+                    }
+
+                    .notification-close:hover {
+                        color: #666;
+                    }
+
+                    @keyframes slideIn {
+                        from {
+                            transform: translateX(100%);
+                            opacity: 0;
+                        }
+                        to {
+                            transform: translateX(0);
+                            opacity: 1;
+                        }
+                    }
+
+                    @keyframes slideOut {
+                        from {
+                            transform: translateX(0);
+                            opacity: 1;
+                        }
+                        to {
+                            transform: translateX(100%);
+                            opacity: 0;
+                        }
+                    }
+
+                    @keyframes timer {
+                        from {
+                            width: 100%;
+                        }
+                        to {
+                            width: 0%;
+                        }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+
+            // Initialize notification container
+            notificationContainer.innerHTML = '';
+        }
+
+        async function validateReferralCode(code) {
+            try {
+                const response = await fetch('http://localhost:3000/api/user/validate-referral', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify({ referralCode: code })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showNotification('success', 'Referral Bonus Received!', `You have received ₹50 bonus for using the referral code!`);
+                    // Update UI to show referral code is used
+                    const referralInput = document.getElementById('referralCode');
+                    if (referralInput) {
+                        referralInput.value = code;
+                        referralInput.disabled = true;
+                    }
+                    // Update referral status
+                    const referralStatus = document.getElementById('referralStatus');
+                    if (referralStatus) {
+                        referralStatus.textContent = 'Referral Code Applied';
+                        referralStatus.className = 'referral-status success';
+                    }
+                } else {
+                    showNotification('error', 'Invalid Referral Code', data.message || 'Failed to validate referral code');
+                }
+            } catch (error) {
+                showNotification('error', 'Error', error.message || 'Failed to validate referral code');
+            }
+        }
+
+        // Update the copyReferralCode function
+        function copyReferralCode() {
+            const referralCode = document.getElementById('referralCode').textContent;
+            navigator.clipboard.writeText(referralCode).then(() => {
+                // Create a modern notification for success
+                const notification = document.createElement('div');
+                notification.className = 'modern-notification success';
+                notification.innerHTML = `
+                    <div class="notification-content">
+                        <div class="notification-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="notification-text">
+                            <h4>Success</h4>
+                            <p>Referral code copied to clipboard</p>
+                            <div class="notification-timer">
+                                <i class="fas fa-check"></i>
+                                <span>Ready to share</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="notification-close" onclick="this.parentElement.remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                document.body.appendChild(notification);
+                
+                // Remove notification after 3 seconds
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                // Create a modern notification for error
+                const notification = document.createElement('div');
+                notification.className = 'modern-notification error';
+                notification.innerHTML = `
+                    <div class="notification-content">
+                        <div class="notification-icon">
+                            <i class="fas fa-exclamation-circle"></i>
+                        </div>
+                        <div class="notification-text">
+                            <h4>Error</h4>
+                            <p>Failed to copy referral code</p>
+                            <div class="notification-timer">
+                                <i class="fas fa-times-circle"></i>
+                                <span>Please try again</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="notification-close" onclick="this.parentElement.remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                document.body.appendChild(notification);
+                
+                // Remove notification after 5 seconds
+                setTimeout(() => {
+                    notification.remove();
+                }, 5000);
+            });
+        }
+
+        // Update the registration form submission
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = {
+                name: formData.get('name'),
+                email: formData.get('email'),
+                phone: formData.get('phone'),
+                password: formData.get('password'),
+                referralCode: formData.get('referralCode')
+            };
+
+            try {
+                const response = await fetch('http://localhost:3000/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    showNotification('success', `
+                        <div class="notification-content">
+                            <div class="notification-icon">
+                                <i class="fas fa-check-circle"></i>
+                        </div>
+                            <div class="notification-text">
+                                <h4>Registration Successful!</h4>
+                                <p>Your account has been created successfully</p>
+                            </div>
+                        </div>
+                    `);
+                    setTimeout(() => {
+                        window.location.href = '/login.html';
+                    }, 2000);
+                } else {
+                    showNotification('error', `
+                        <div class="notification-content">
+                            <div class="notification-icon">
+                                <i class="fas fa-exclamation-circle"></i>
+                                </div>
+                            <div class="notification-text">
+                                <h4>Registration Failed</h4>
+                                <p>${result.message || 'Please try again'}</p>
+                                    </div>
+                                    </div>
+                    `);
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                showNotification('error', `
+                    <div class="notification-content">
+                        <div class="notification-icon">
+                            <i class="fas fa-exclamation-circle"></i>
+                                    </div>
+                        <div class="notification-text">
+                            <h4>Error</h4>
+                            <p>Failed to register. Please try again.</p>
+                                </div>
+                            </div>
+                `);
+            }
+        });
+
+        // Handle referral code submission
+        document.getElementById('referralForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const referralCode = document.getElementById('referralCode').value.trim();
+            
+            if (!referralCode) {
+                showNotification('Please enter a referral code', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/verify-referral', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify({ referralCode })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Create a modern notification
+                    const notification = document.createElement('div');
+                    notification.className = 'modern-notification';
+                    notification.innerHTML = `
+                        <div class="notification-content">
+                            <div class="notification-icon">
+                                <i class="fas fa-gift"></i>
+                            </div>
+                            <div class="notification-text">
+                                <h4>Referral Code Applied Successfully!</h4>
+                                <p>You've earned ${data.bonus} points</p>
+                                <div class="notification-timer">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Points added to your account</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="notification-close" onclick="this.parentElement.remove()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    document.body.appendChild(notification);
+                    
+                    // Remove notification after 5 seconds
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 5000);
+
+                    // Update points display
+                    updatePointsDisplay(data.newPoints);
+                    document.getElementById('referralCode').value = '';
+                } else {
+                    showNotification(data.error || 'Failed to apply referral code', 'error');
+                }
+            } catch (error) {
+                console.error('Error applying referral code:', error);
+                showNotification('Failed to apply referral code', 'error');
+            }
+        });
     </script>
+
+    <!-- Add this HTML before the closing body tag -->
+    <div class="modal-overlay" id="contactModalOverlay"></div>
+    <div class="contact-modal" id="contactModal">
+        <button class="contact-modal-close" onclick="closeContactModal()">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="contact-modal-header">
+            <h3>Contact & Support</h3>
+            <p>Choose your preferred way to reach us</p>
+                        </div>
+        <div class="contact-options">
+            <a href="https://t.me/advancedproducts4in" target="_blank" class="contact-option telegram">
+                <i class="fab fa-telegram"></i>
+                <div class="contact-option-content">
+                    <h4>Telegram Support</h4>
+                    <p>Quick responses, available 24/7</p>
+                                </div>
+            </a>
+            <a href="mailto:advancedproduct01@gmail.com" class="contact-option gmail">
+                <i class="far fa-envelope"></i>
+                <div class="contact-option-content">
+                    <h4>Email Support</h4>
+                    <p>Detailed inquiries and documentation</p>
+                                    </div>
+            </a>
+                                    </div>
+                                    </div>
+
+    <!-- Add this HTML before the closing body tag -->
+    <div class="modal-overlay" id="logoutModalOverlay"></div>
+    <div class="logout-modal" id="logoutModal">
+        <div class="logout-modal-icon">
+            <i class="fas fa-sign-out-alt"></i>
+                                </div>
+        <h3>Logout Confirmation</h3>
+        <p>Are you sure you want to logout from your account?</p>
+        <div class="logout-buttons">
+            <button class="logout-btn cancel" onclick="cancelLogout()">Cancel</button>
+            <button class="logout-btn confirm" onclick="confirmLogout()">Yes, Logout</button>
+                            </div>
+                        </div>
 </body>
 </html>

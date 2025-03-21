@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #a855f7, #9333ea);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #6b21a8;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #6b21a8;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #a855f7;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #7e22ce;
+        }
+        .error {
+            color: #dc2626;
+            text-align: center;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1>Admin Login</h1>
+        <form id="adminLoginForm">
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" required placeholder="Enter phone number">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required placeholder="Enter password">
+            </div>
+            <button type="submit">Login</button>
+        </form>
+        <div id="error" class="error"></div>
+    </div>
+
+    <script>
+        document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('error');
+
+            try {
+                const response = await fetch('http://localhost:3000/admin/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ phone, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    localStorage.setItem('adminToken', data.token);
+                    window.location.href = 'admin-dashboard.html';
+                } else {
+                    errorDiv.style.display = 'block';
+                    errorDiv.textContent = data.message || 'Login failed';
+                }
+            } catch (error) {
+                errorDiv.style.display = 'block';
+                errorDiv.textContent = 'Error connecting to server';
+            }
+        });
+    </script>
+</body>
+</html> 

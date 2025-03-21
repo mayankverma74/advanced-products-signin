@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Advanced Products</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root {
+            --primary-color: #673ab7;
+            --primary-dark: #5e35b1;
+            --primary-light: #d1c4e9;
+            --text-dark: #2c3e50;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: var(--primary-light);
+        }
+
+        .page-title {
+            text-align: center;
+            color: #673ab7;
+            font-size: 24px;
+            margin-bottom: 30px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: linear-gradient(45deg, #673ab7, #9c27b0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 30px;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+            width: 100%;
+        }
+
+        .form-group input {
+            width: calc(100% - 40px);
+            padding: 12px 20px 12px 35px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            border-color: #673ab7;
+            box-shadow: 0 0 0 3px rgba(103, 58, 183, 0.1);
+            outline: none;
+        }
+
+        .form-group i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #673ab7;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .cool-button {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .cool-button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .cool-button:disabled {
+            background-color: #9e9e9e;
+            cursor: not-allowed;
+        }
+
+        .links-container {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .login-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .login-link:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        .otp-container {
+            display: none;
+            margin-top: 1rem;
+        }
+
+        .otp-container.show {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        .resend-otp {
+            text-align: center;
+            margin-top: 1rem;
+            color: var(--primary-color);
+            cursor: pointer;
+        }
+
+        .resend-otp:hover {
+            text-decoration: underline;
+        }
+
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .timer {
+            text-align: center;
+            margin-top: 0.5rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="page-title">Create Account to Advanced Products ✨</h1>
+        
+        <!-- Signup Form -->
+        <form id="signupForm">
+            <div class="form-group">
+                <i class="fas fa-user"></i>
+                <label for="fullName">👤 Full Name</label>
+                <input type="text" id="fullName" name="fullName" required placeholder="Enter your full name">
+            </div>
+            <div class="form-group">
+                <i class="fas fa-phone"></i>
+                <label for="phone">📱 Phone Number</label>
+                <input type="tel" id="phone" name="phone" required pattern="[0-9]{10}" placeholder="Enter your phone number">
+            </div>
+            <div class="form-group">
+                <i class="fas fa-lock"></i>
+                <label for="password">🔒 Password</label>
+                <input type="password" id="password" name="password" required minlength="6" placeholder="Choose a password (min. 6 characters)">
+            </div>
+            <div class="form-group" id="otpGroup" style="display: none;">
+                <i class="fas fa-key"></i>
+                <label for="otp">🔑 Enter OTP</label>
+                <input type="text" id="otp" name="otp" pattern="[0-9]{6}" placeholder="Enter 6-digit OTP">
+            </div>
+            <button type="button" id="sendOtpButton" class="cool-button">
+                <i class="fas fa-paper-plane"></i> Send OTP 📤
+            </button>
+            <button type="submit" id="verifyButton" class="cool-button" style="display: none;">
+                <i class="fas fa-paper-plane"></i> Verify & Sign Up 📤
+            </button>
+        </form>
+
+        <div class="links-container">
+            <a href="/login" class="login-link">
+                <i class="fas fa-sign-in-alt"></i> Already have an account? Login 🎯
+            </a>
+        </div>
+        <div class="timer" id="otpTimer" style="display: none;"></div>
+        <div class="resend-otp" id="resendOtp" style="display: none;">Resend OTP</div>
+    </div>
+
+    <script>
+        const signupForm = document.getElementById('signupForm');app.post('/api/transactions/deposit', authenticateToken, async (req, res) => {
+            try {
+                const { amount, utrNumber, userName, phoneNumber } = req.body;
+                
+                console.log('Deposit request:', {
+                    userId: req.user.userId,
+                    amount,
+                    utrNumber,
+                    userName,
+                    phoneNumber
+                });
+                
+                const deposit = new Transaction({
+                    userId: req.user.userId,
+                    type: 'deposit',
+                    amount,
+                    utrNumber,
+                    userName,
+                    phoneNumber,
+                    status: 'pending'
+                });
+        
+                console.log('Created deposit object:', deposit);
+                
+                const savedDeposit = await deposit.save();
+                console.log('Saved deposit:', savedDeposit);
+                
+                res.json({ success: true, deposit: savedDeposit });
+            } catch (error) {
+                console.error('Detailed deposit error:', error);
+                res.status(500).json({ error: 'Failed to process deposit' });
+            }
+        });app.post('/api/transactions/deposit', authenticateToken, async (req, res) => {
+            try {
+                const { amount, utrNumber, userName, phoneNumber } = req.body;
+                
+                console.log('Deposit request:', {
+                    userId: req.user.userId,
+                    amount,
+                    utrNumber,
+                    userName,
+                    phoneNumber
+                });
+                
+                const deposit = new Transaction({
+                    userId: req.user.userId,
+                    type: 'deposit',
+                    amount,
+                    utrNumber,
+                    userName,
+                    phoneNumber,
+                    status: 'pending'
+                });
+        
+                console.log('Created deposit object:', deposit);
+                
+                const savedDeposit = await deposit.save();
+                console.log('Saved deposit:', savedDeposit);
+                
+                res.json({ success: true, deposit: savedDeposit });
+            } catch (error) {
+                console.error('Detailed deposit error:', error);
+                res.status(500).json({ error: 'Failed to process deposit' });
+            }
+        });
+        const sendOtpButton = document.getElementById('sendOtpButton');
+        const verifyButton = document.getElementById('verifyButton');
+        const resendOtp = document.getElementById('resendOtp');
+        const otpTimer = document.getElementById('otpTimer');
+        const otpGroup = document.getElementById('otpGroup');
+        let timeLeft = 300; // 5 minutes
+        let timerId = null;
+
+        async function handleSignup(event) {
+            event.preventDefault();
+            
+            const fullName = document.getElementById('fullName').value.trim();
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('password').value;
+
+            // Validate full name
+            if (!fullName) {
+                await Swal.fire({
+                    icon: 'warning',
+                    title: 'Full Name Required! 📝',
+                    text: 'Please enter your full name to continue.',
+                    confirmButtonColor: '#673ab7',
+                    background: '#fff',
+                    showClass: {
+                        popup: 'animate__animated animate__fadeInDown'
+                    },
+                    hideClass: {
+                        popup: 'animate__animated animate__fadeOutUp'
+                    }
+                });
+                document.getElementById('fullName').focus();
+                return;
+            }
+
+            // Validate full name format
+            if (!/^[a-zA-Z\s]{3,}$/.test(fullName)) {
+                await Swal.fire({
+                    icon: 'warning',
+                    title: 'Invalid Name Format! ✍️',
+                    html: 'Please ensure your name:<br>' +
+                          '• Contains only letters and spaces<br>' +
+                          '• Is at least 3 characters long<br>' +
+                          '• Does not include numbers or special characters',
+                    confirmButtonColor: '#673ab7',
+                    background: '#fff',
+                    showClass: {
+                        popup: 'animate__animated animate__fadeInDown'
+                    },
+                    hideClass: {
+                        popup: 'animate__animated animate__fadeOutUp'
+                    }
+                });
+                document.getElementById('fullName').focus();
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/send-otp', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ phone })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to send OTP');
+                }
+
+                // Store form data for later use
+                localStorage.setItem('signupData', JSON.stringify({
+                    fullName,
+                    phone,
+                    password
+                }));
+
+                // Show OTP sent success message
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'OTP Sent Successfully on WhatsApp 📱',
+                    html: `
+                        <div style="text-align: left; margin-top: 10px;">
+                            <p>We've sent a 6-digit OTP to your phone number.</p>
+                            <p>Please check your messages and enter the OTP below.</p>
+                        </div>
+                    `,
+                    confirmButtonColor: '#673ab7',
+                    background: '#fff'
+                });
+
+                // Show OTP input
+                otpGroup.style.display = 'block';
+                sendOtpButton.style.display = 'none';
+                verifyButton.style.display = 'block';
+
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops... 😕',
+                    text: error.message,
+                    confirmButtonColor: '#673ab7',
+                    background: '#fff'
+                });
+            }
+        }
+
+        sendOtpButton.addEventListener('click', handleSignup);
+
+        function startOtpTimer() {
+            clearInterval(timerId);
+            timeLeft = 300;
+            timerId = setInterval(() => {
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                otpTimer.textContent = `OTP expires in ${minutes}:${seconds.toString().padStart(2, '0')}`;
+                otpTimer.style.display = 'block';
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerId);
+                    otpTimer.textContent = 'OTP expired. Please request a new one.';
+                    resendOtp.style.display = 'block';
+                }
+            }, 1000);
+        }
+
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fullName = document.getElementById('fullName').value;
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('password').value;
+            const otp = document.getElementById('otp').value;
+
+            if (!otp || !/^[0-9]{6}$/.test(otp)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid OTP',
+                    text: 'Please enter a valid 6-digit OTP',
+                    confirmButtonColor: '#673ab7',
+                    background: '#fff'
+                });
+                return;
+            }
+
+            try {
+                verifyButton.disabled = true;
+                verifyButton.innerHTML = '<div class="loading-spinner"></div>';
+
+                const response = await fetch('/api/verify-otp', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        fullName,
+                        phone,
+                        password,
+                        otp
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Store token
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+
+                    await Swal.fire({
+                        icon: 'success',
+                        title: 'Welcome Aboard! 🎉',
+                        text: 'Your account has been created successfully',
+                        confirmButtonColor: '#673ab7',
+                        background: '#fff',
+                        iconColor: '#673ab7'
+                    });
+
+                    // Redirect to dashboard
+                    window.location.href = '/dashboard';
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: error.message || 'Failed to create account',
+                    confirmButtonColor: '#673ab7',
+                    background: '#fff'
+                });
+            } finally {
+                verifyButton.disabled = false;
+                verifyButton.innerHTML = '<i class="fas fa-user-plus"></i> Verify & Sign Up ✨';
+            }
+        });
+
+        resendOtp.addEventListener('click', () => {
+            sendOtpButton.click();
+        });
+    </script>
+</body>
+</html>

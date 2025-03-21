@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test 2factor.in OTP API</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 300px;
+      text-align: center;
+    }
+    input, button {
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+    pre {
+      background: #eee;
+      padding: 10px;
+      text-align: left;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Test OTP API</h2>
+    <input type="text" id="phone" placeholder="Enter 10-digit phone number">
+    <button onclick="sendOTP()">Send OTP</button>
+    <div id="otpSection" style="display: none;">
+      <input type="text" id="otp" placeholder="Enter OTP received">
+      <button onclick="verifyOTP()">Verify OTP</button>
+    </div>
+    <pre id="result"></pre>
+  </div>
+
+  <script>
+    async function sendOTP() {
+      const phone = document.getElementById('phone').value;
+      const result = document.getElementById('result');
+      
+      try {
+        const response = await fetch("http://localhost:3000/send-otp", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ phone })
+        });
+        const data = await response.json();
+        result.textContent = JSON.stringify(data, null, 2);
+        
+        if (data.success) {
+          document.getElementById('otpSection').style.display = 'block';
+        }
+      } catch (error) {
+        result.textContent = "Error: " + error;
+      }
+    }
+    
+    async function verifyOTP() {
+      const phone = document.getElementById('phone').value;
+      const otp = document.getElementById('otp').value;
+      const result = document.getElementById('result');
+      
+      try {
+        const response = await fetch("http://localhost:3000/verify-otp", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ phone, otp })
+        });
+        const data = await response.json();
+        result.textContent = JSON.stringify(data, null, 2);
+      } catch (error) {
+        result.textContent = "Error: " + error;
+      }
+    }
+  </script>
+</body>
+</html>

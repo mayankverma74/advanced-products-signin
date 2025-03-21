@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #a855f7, #9333ea);
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+            color: #333;
+        }
+        h1 {
+            color: #6b21a8;
+        }
+        .btn {
+            background-color: #a855f7;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin: 5px;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .btn:hover {
+            background-color: #7e22ce;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .table th, .table td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        .table th {
+            background-color: #9333ea;
+            color: white;
+        }
+        .actions button {
+            padding: 5px 10px;
+            margin: 3px;
+        }
+        .wallet-form {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        .wallet-form input {
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .success-message {
+            color: #059669;
+            margin: 10px 0;
+            display: none;
+        }
+        .error-message {
+            color: #dc2626;
+            margin: 10px 0;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Dashboard</h1>
+        <button class="btn" onclick="fetchUsers()">View Users</button>
+        <button class="btn" onclick="fetchTransactions()">View Transactions</button>
+        <button class="btn" onclick="logout()">Logout</button>
+        
+        <div id="users"></div>
+        <div id="transactions"></div>
+        
+        <div class="wallet-form">
+            <h3>Update User Wallet</h3>
+            <input type="text" id="userPhone" placeholder="User Phone" />
+            <input type="number" id="walletAmount" placeholder="Amount" />
+            <button class="btn" onclick="updateWallet(true)">Add Money</button>
+            <button class="btn" onclick="updateWallet(false)">Remove Money</button>
+            <div id="walletMessage" class="success-message"></div>
+        </div>
+    </div>
+
+    <script>
+        const token = localStorage.getItem("adminToken");
+        if (!token) {
+            alert("Access Denied! Please login as Admin.");
+            window.location.href = "admin-login.html";
+        }
+
+        function showMessage(message, isError = false) {
+            const messageDiv = document.getElementById('walletMessage');
+            messageDiv.textContent = message;
+            messageDiv.style.display = 'block';
+            messageDiv.className = isError ? 'error-message' : 'success-message';
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 3000);
+        }
+
+        function fetchUsers() {
+            fetch("http://localhost:3000/admin/users", {
+                headers: { "Authorization": `Bearer ${token}` }
+            })
+            .then(res => res.json())
+            .then(data => {
+                let output = "<h3>Registered Users:</h3><table class='table'><tr><th>Name</th><th>Phone</th><th>Wallet Balance</th></tr>";
+                data.forEach(user => {
+                    output += `<tr><td>${user.fullName}</td><td>${user.phone}</td><td>₹${user.wallet || 0}</td></tr>`;
+                });
+                output += "</table>";
+                document.getElementById("users").innerHTML = output;
+            })
+            .catch(err => {
+                showMessage("Error fetching users", true);
+            });
+        }
+
+        function fetchTransactions() {
+            fetch("http://localhost:3000/admin/transactions", {
+                headers: { "Authorization": `Bearer ${token}` }
+            })
+            .then(res => res.json())
+            .then(data => {
+                let output = "<h3>Transactions:</h3><table class='table'><tr><th>User</th><th>Type</th><th>Amount</th><th>Status</th><th>Actions</th></tr>";
+                data.transactions.forEach(txn => {
+                    output += `<tr>
+                        <td>${txn.userName}</td>
+                        <td>${txn.type}</td>
+                        <td>₹${txn.amount}</td>
+                        <td>${txn.status}</td>
+                        <td class='actions'>
+                            ${txn.status === 'pending' ? `<button onclick="approveTransaction('${txn._id}', '${txn.type}')">Approve</button>` : ''}
+                        </td>
+                    </tr>`;
+                });
+                output += "</table>";
+                document.getElementById("transactions").innerHTML = output;
+            })
+            .catch(err => {
+                showMessage("Error fetching transactions", true);
+            });
+        }
+
+        function updateWallet(isAdd) {
+            const phone = document.getElementById("userPhone").value;
+            const amount = document.getElementById("walletAmount").value;
+
+            if (!phone || !amount) {
+                showMessage("Please fill all fields", true);
+                return;
+            }
+
+            fetch("http://localhost:3000/admin/update-wallet", {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ phone, amount: Number
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (res.ok) {
+                    showMessage(data.message);
+                    document.getElementById("userPhone").value = "";
+                    document.getElementById("walletAmount").value = "";
+                    fetchUsers();
+                } else {
+                    showMessage(data.message, true);
+                }
+            })
+            .catch(err => {
+                showMessage("Error updating wallet", true);
+            });
+        }
+
+        function approveTransaction(id, type) {
+            const url = type === 'deposit' ? "/admin/approve-deposit" : "/admin/approve-withdrawal";
+            fetch(`http://localhost:3000${url}`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ transactionId: id })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (res.ok) {
+                    showMessage(data.message);
+                    fetchTransactions();
+                    fetchUsers();
+                } else {
+                    showMessage(data.message, true);
+                }
+            })
+            .catch(err => {
+                showMessage("Error approving transaction", true);
+            });
+        }
+
+        function logout() {
+            localStorage.removeItem("adminToken");
+            window.location.href = "admin-login.html";
+        }
+
+        // Fetch initial data
+        fetchUsers();
+        fetchTransactions();
+    </script>
+</body>
+</html>
