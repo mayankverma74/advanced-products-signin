@@ -9,6 +9,9 @@ const resendOtpButton = document.getElementById('resendOtp');
 const otpTimerElement = document.getElementById('otpTimer');
 const otpInput = document.getElementById('otp');
 
+// Add API base URL
+const API_BASE_URL = 'https://advanced-products-backend.onrender.com';
+
 function showAlert(title, text, icon) {
     return Swal.fire({
         title,
@@ -61,7 +64,7 @@ function showOtpSection() {
 }
 
 async function sendOTP(formData) {
-    const response = await fetch('/api/signup/send-otp', {
+    const response = await fetch(`${API_BASE_URL}/api/signup/send-otp`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -93,7 +96,7 @@ async function sendOTP(formData) {
 }
 
 async function verifyOTP(phone, otp) {
-    const response = await fetch('/api/signup/verify-otp', {
+    const response = await fetch(`${API_BASE_URL}/api/signup/verify-otp`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -110,66 +113,34 @@ async function verifyOTP(phone, otp) {
     return data;
 }
 
+// Update signup form submission
 signupForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-
     const fullName = document.getElementById('fullName').value;
     const phone = document.getElementById('phone').value;
     const password = document.getElementById('password').value;
-    const otp = document.getElementById('otp').value;
+    const referralCode = document.getElementById('referralCode').value;
 
     try {
-        if (!otpSent) {
-            // Validate input for initial submission
-            if (!fullName || !phone || !password) {
-                showAlert('Missing Information', 'Please fill in all required fields', 'warning');
-                return;
-            }
+        const response = await fetch(`${API_BASE_URL}/api/signup`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ fullName, phone, password, referralCode })
+        });
 
-            // Validate phone number format
-            if (!/^[0-9]{10}$/.test(phone)) {
-                showAlert('Invalid Phone', 'Please enter a valid 10-digit phone number', 'warning');
-                return;
-            }
-
-            // Validate full name format
-            if (!/^[a-zA-Z\s]{3,20}$/.test(fullName)) {
-                showAlert('Invalid Name', 'Full name should be 3-20 characters long and contain only letters', 'warning');
-                return;
-            }
-
-            // Validate password strength
-            if (password.length < 6 || password.length > 20) {
-                showAlert('Invalid Password', 'Password must be 6-20 characters long', 'warning');
-                return;
-            }
-
-            // Step 1: Send OTP
-            await sendOTP({ fullName, phone, password });
-            showOtpSection();
+        const data = await response.json();
+        if (response.ok) {
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            window.location.href = 'dashboard.html';
         } else {
-            // Validate OTP format
-            if (!/^[0-9]{6}$/.test(otp)) {
-                showAlert('Invalid OTP', 'Please enter a valid 6-digit OTP', 'warning');
-                return;
-            }
-
-            // Step 2: Verify OTP
-            const verifyOtpData = await verifyOTP(phone, otp);
-
-            // Store token and user data
-            localStorage.setItem('token', verifyOtpData.token);
-            localStorage.setItem('user', JSON.stringify(verifyOtpData.user));
-            
-            await showAlert('Success!', 'Account created successfully!', 'success');
-            
-            // Redirect to dashboard
-            window.location.href = '/dashboard';
+            showError(data.error || 'Signup failed');
         }
     } catch (error) {
-        if (error.message !== 'Phone number already registered') {
-            showAlert('Error', error.message || 'Error during signup. Please try again.', 'error');
-        }
+        console.error('Signup error:', error);
+        showError('Failed to connect to server');
     }
 });
 

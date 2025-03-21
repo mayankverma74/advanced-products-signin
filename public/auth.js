@@ -1,10 +1,13 @@
+// Add this at the top of the file
+const API_BASE_URL = 'https://advanced-products-backend.onrender.com';
+
 // Check authentication status
 async function isAuthenticated() {
     const token = localStorage.getItem('token');
     if (!token) return false;
     
     try {
-        const response = await fetch('/api/verify-token', {
+        const response = await fetch(`${API_BASE_URL}/api/verify-token`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -59,3 +62,23 @@ function getAuthHeaders() {
     const token = localStorage.getItem('token');
     return token ? { 'Authorization': `Bearer ${token}` } : {};
 }
+
+// Update all fetch calls to use API_BASE_URL
+// For example:
+async function login(phone, password) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ phone, password })
+        });
+        // ... rest of the function
+    } catch (error) {
+        console.error('Login error:', error);
+        throw error;
+    }
+}
+
+// Update other functions similarly

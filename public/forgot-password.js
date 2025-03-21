@@ -1,6 +1,9 @@
 let resetOtpTimer;
 let resetResendTimer = 60;
 
+// Add API base URL
+const API_BASE_URL = 'https://advanced-products-backend.onrender.com';
+
 document.getElementById('forgotPasswordLink').addEventListener('click', function(e) {
     e.preventDefault();
     document.getElementById('forgotPasswordModal').style.display = 'block';
@@ -41,22 +44,14 @@ function startResetOtpTimer() {
     }, 1000);
 }
 
-document.getElementById('sendResetOtpBtn').addEventListener('click', async function() {
-    const phone = document.getElementById('resetPhone').value;
-    
-    if (!/^[0-9]{10}$/.test(phone)) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Invalid Phone Number',
-            text: 'Please enter a valid 10-digit phone number'
-        });
-        return;
-    }
-
+// Update send OTP function
+async function sendOTP(phone) {
     try {
-        const response = await fetch('/api/reset-password/send-otp', {
+        const response = await fetch(`${API_BASE_URL}/api/forgot-password/send-otp`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify({ phone })
         });
 
@@ -79,12 +74,58 @@ document.getElementById('sendResetOtpBtn').addEventListener('click', async funct
             throw new Error(data.error || 'Phone number not registered');
         }
     } catch (error) {
+        console.error('Send OTP error:', error);
         Swal.fire({
             icon: 'error',
             title: 'Error',
             text: error.message
         });
     }
+}
+
+// Update verify OTP function
+async function verifyOTP(phone, otp) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/forgot-password/verify-otp`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ phone, otp })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            document.getElementById('stepOtp').style.display = 'none';
+            document.getElementById('stepNewPassword').style.display = 'block';
+            if (resetOtpTimer) clearInterval(resetOtpTimer);
+        } else {
+            throw new Error(data.error || 'Invalid OTP');
+        }
+    } catch (error) {
+        console.error('Verify OTP error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: error.message
+        });
+    }
+}
+
+document.getElementById('sendResetOtpBtn').addEventListener('click', async function() {
+    const phone = document.getElementById('resetPhone').value;
+    
+    if (!/^[0-9]{10}$/.test(phone)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Invalid Phone Number',
+            text: 'Please enter a valid 10-digit phone number'
+        });
+        return;
+    }
+
+    await sendOTP(phone);
 });
 
 document.getElementById('verifyResetOtpBtn').addEventListener('click', async function() {
@@ -100,29 +141,7 @@ document.getElementById('verifyResetOtpBtn').addEventListener('click', async fun
         return;
     }
 
-    try {
-        const response = await fetch('/api/reset-password/verify-otp', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ phone, otp })
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            document.getElementById('stepOtp').style.display = 'none';
-            document.getElementById('stepNewPassword').style.display = 'block';
-            if (resetOtpTimer) clearInterval(resetOtpTimer);
-        } else {
-            throw new Error(data.error || 'Invalid OTP');
-        }
-    } catch (error) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: error.message
-        });
-    }
+    await verifyOTP(phone, otp);
 });
 
 document.getElementById('resendResetOtp').addEventListener('click', async function() {
@@ -130,7 +149,7 @@ document.getElementById('resendResetOtp').addEventListener('click', async functi
     this.disabled = true;
     
     try {
-        const response = await fetch('/api/reset-password/resend-otp', {
+        const response = await fetch(`${API_BASE_URL}/api/forgot-password/resend-otp`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ phone })
@@ -187,9 +206,11 @@ document.getElementById('forgotPasswordForm').addEventListener('submit', async f
     }
 
     try {
-        const response = await fetch('/api/reset-password/update', {
+        const response = await fetch(`${API_BASE_URL}/api/forgot-password/reset`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify({ phone, newPassword })
         });
 
@@ -213,6 +234,7 @@ document.getElementById('forgotPasswordForm').addEventListener('submit', async f
             throw new Error(data.error || 'Failed to update password');
         }
     } catch (error) {
+        console.error('Reset password error:', error);
         Swal.fire({
             icon: 'error',
             title: 'Error',

@@ -1,3 +1,6 @@
+// Add API base URL
+const API_BASE_URL = 'https://advanced-products-backend.onrender.com';
+
 const loginForm = document.getElementById('loginForm');
 
 loginForm.addEventListener('submit', async (e) => {
@@ -28,7 +31,7 @@ loginForm.addEventListener('submit', async (e) => {
 
     try {
         console.log('Attempting login...');
-        const response = await fetch('/api/login', {
+        const response = await fetch(`${API_BASE_URL}/api/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

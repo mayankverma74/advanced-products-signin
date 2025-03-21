@@ -21,7 +21,7 @@
         }
 
         * {
-            margin: 0; 
+            margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Poppins', sans-serif;
@@ -636,7 +636,7 @@
             .active-plan-card {
                 flex-direction: column;
                 gap: 15px;
-                text-align: center;
+            text-align: center;
             }
 
             .active-plan-info {
@@ -743,7 +743,7 @@
     position: relative;
     padding: 1rem;
     max-height: calc(100vh - 200px);
-    overflow-y: auto;
+            overflow-y: auto;
     z-index: 100000;
 }
 
@@ -847,7 +847,7 @@
             font-size: 20px;
             color: #333;
             display: flex;
-            align-items: center;
+                align-items: center;
             gap: 10px;
         }
 
@@ -881,7 +881,7 @@
         }
 
         .form-group input {
-            width: 100%;
+                width: 100%;
             padding: 12px;
             border: 1px solid #ddd;
             border-radius: 8px;
@@ -1355,7 +1355,7 @@
             border-radius: 15px;
             padding: 20px;
             margin: 20px 0;
-                text-align: center;
+            text-align: center;
         }
 
         .modern-form .payment-section h3 {
@@ -2163,8 +2163,8 @@
                     </a>
                     <a href="#" class="menu-item" onclick="viewActivePlans()">
                         <div class="menu-icon">
-                                    <i class="fas fa-crown"></i>
-                                    </div>
+                            <i class="fas fa-crown"></i>
+                        </div>
                         <span>Active Plans</span>
                         <i class="fas fa-chevron-right menu-indicator"></i>
                     </a>
@@ -2230,7 +2230,7 @@
         <!-- Plans Section -->
         <section class="plans-section">
             <h2 class="section-title">
-                <i class="fas fa-crown"></i>
+                                    <i class="fas fa-crown"></i>
                 Available Plans
             </h2>
             
@@ -2238,7 +2238,7 @@
             <div class="plan-tabs">
                 <button class="tab-btn active" onclick="switchTab('monthly')">Monthly Plans</button>
                 <button class="tab-btn" onclick="switchTab('weekly')">Weekly Plans</button>
-            </div>
+                                </div>
 
             <!-- Monthly Plans -->
             <div class="plans-grid" id="monthlyPlans">
@@ -2247,7 +2247,7 @@
                     <div class="plan-header">
                         <h3 class="plan-name">Basic Plan</h3>
                         <div class="plan-price">₹299</div>
-                    </div>
+                                    </div>
                     <ul class="plan-features">
                         <li class="plan-feature">
                             <i class="fas fa-check"></i>
@@ -2265,14 +2265,14 @@
                     <button class="plan-button" onclick="purchasePlan('basic', 'Basic Plan', 299)">
                         Purchase Now
                     </button>
-                </div>
+                                    </div>
 
                 <!-- Premium Plan -->
                 <div class="plan-card">
                     <div class="plan-header">
                         <h3 class="plan-name">Premium Plan</h3>
                         <div class="plan-price">₹720</div>
-                    </div>
+                                    </div>
                     <ul class="plan-features">
                         <li class="plan-feature">
                             <i class="fas fa-check"></i>
@@ -2290,14 +2290,14 @@
                     <button class="plan-button" onclick="purchasePlan('premium', 'Premium Plan', 720)">
                         Purchase Now
                     </button>
-                </div>
+                                </div>
 
                 <!-- VIP Plan -->
                 <div class="plan-card">
                     <div class="plan-header">
                         <h3 class="plan-name">VIP Plan</h3>
                         <div class="plan-price">₹1200</div>
-                        </div>
+                            </div>
                     <ul class="plan-features">
                         <li class="plan-feature">
                             <i class="fas fa-check"></i>
@@ -2322,7 +2322,7 @@
                     <div class="plan-header">
                         <h3 class="plan-name">Elite Plan</h3>
                         <div class="plan-price">₹1499</div>
-                                </div>
+                        </div>
                     <ul class="plan-features">
                         <li class="plan-feature">
                             <i class="fas fa-check"></i>
@@ -2561,7 +2561,7 @@
                     <div class="balance-card">
                         <div class="balance-icon">
                             <i class="fas fa-wallet"></i>
-                                </div>
+                        </div>
                         <div class="balance-info">
                             <span class="balance-label">Available Balance</span>
                             <span class="balance-amount" id="withdrawBalance">₹0</span>
@@ -2591,21 +2591,21 @@
                             <div class="payment-method-card" onclick="selectPaymentMethod('phonepe')" data-method="phonepe">
                                         <i class="fas fa-mobile-alt"></i>
                                 <span>PhonePe</span>
-                            </div>
+                                </div>
                             <div class="payment-method-card" onclick="selectPaymentMethod('paytm')" data-method="paytm">
                                         <i class="fas fa-wallet"></i>
                                 <span>Paytm</span>
-                            </div>
+                                    </div>
                             <div class="payment-method-card" onclick="selectPaymentMethod('gpay')" data-method="gpay">
                                         <i class="fab fa-google-pay"></i>
                                 <span>Google Pay</span>
-                                </div>
+                                    </div>
                             <div class="payment-method-card" onclick="selectPaymentMethod('bank')" data-method="bank">
                                 <i class="fas fa-university"></i>
                                 <span>Bank Transfer</span>
+                                </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
 
                     <div class="payment-details-section" id="upiDetails" style="display: none;">
                         <div class="form-group">
@@ -2727,7 +2727,7 @@
                             <div class="stat-info">
                                 <span id="totalEarnings">₹0</span>
                                 <p>Total Earnings</p>
-                            </div>
+                        </div>
                         </div>
                     </div>
                     <div class="team-list" id="teamList">
@@ -2749,26 +2749,26 @@
                 <button class="close-btn" onclick="closeSupportModal()">
                     <i class="fas fa-times"></i>
                 </button>
-            </div>
+                                </div>
             <div class="modal-body">
                 <div class="support-info">
                     <div class="support-card">
                         <i class="fas fa-phone"></i>
                         <h3>Phone Support</h3>
                         <p>Call us at: <a href="tel:+1234567890">+123 456 7890</a></p>
-                    </div>
+                                    </div>
                     <div class="support-card">
                         <i class="fas fa-envelope"></i>
                         <h3>Email Support</h3>
                         <p>Email us at: <a href="mailto:support@advancedproducts.com">support@advancedproducts.com</a></p>
-                    </div>
+                                    </div>
                     <div class="support-card">
                         <i class="fas fa-clock"></i>
                         <h3>Working Hours</h3>
                         <p>24/7 Support Available</p>
-                    </div>
-                </div>
-            </div>
+                                </div>
+                                </div>
+                            </div>
             <div class="modal-footer">
                 <button class="cancel-btn" onclick="closeSupportModal()">Cancel</button>
             </div>
@@ -2783,7 +2783,7 @@
                 <button class="close-btn" onclick="closeTransactionModal()">
                     <i class="fas fa-times"></i>
                 </button>
-            </div>
+                        </div>
             <div class="modal-body">
                 <div class="transaction-list" id="transactionList">
                     <!-- Transactions will be dynamically added here -->
@@ -2796,7 +2796,9 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
+        const API_BASE_URL = 'https://advanced-products-backend.onrender.com';
         // Define plans variable at the top
         const plans = {
             monthly: [
@@ -2949,7 +2951,7 @@
         async function loadUserData() {
             try {
                 const token = localStorage.getItem('token');
-                const response = await fetch('/api/user/profile', {
+                const response = await fetch(`${API_BASE_URL}/api/user/profile`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -2985,7 +2987,7 @@
         async function loadActivePlans() {
             try {
                 const token = localStorage.getItem('token');
-                const response = await fetch('/api/user/points', {
+                const response = await fetch(`${API_BASE_URL}/api/user/points`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -3082,7 +3084,7 @@
                     phoneNumber: document.getElementById('depositPhone').value
                 };
 
-                const response = await fetch('/api/transactions/deposit', {
+                const response = await fetch(`${API_BASE_URL}/api/transactions/deposit`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -3226,7 +3228,7 @@
                 console.log('Request Body:', requestBody);
 
                 // Make the API call
-                const response = await fetch('/api/transactions/withdrawal', {
+                const response = await fetch(`${API_BASE_URL}/api/transactions/withdrawal`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -3338,7 +3340,7 @@
                 }
 
                 const token = localStorage.getItem('token');
-                const response = await fetch('/api/plans/purchase', {
+                const response = await fetch(`${API_BASE_URL}/api/plans/purchase`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -3352,26 +3354,25 @@
                 });
 
                 const data = await response.json();
-
                 if (!response.ok) {
                     // Check if the error is due to already having the plan
                     if (data.error && data.error.includes('already have')) {
-                        Swal.fire({
+            Swal.fire({
                             icon: 'info',
                             title: 'Plan Already Active',
-                            html: `
+                html: `
                                 <div style="text-align: center;">
                                     <div style="margin-bottom: 20px;">
                                         <i class="fas fa-check-circle" style="font-size: 48px; color: #7e57c2;"></i>
-                                    </div>
+                        </div>
                                     <p style="font-size: 16px; color: #666;">
                                         You already have the <strong>${planName}</strong> plan active.
                                     </p>
                                     <p style="font-size: 14px; color: #888; margin-top: 10px;">
                                         Please wait until your current plan expires before purchasing again.
                                     </p>
-                                </div>
-                            `,
+                    </div>
+                `,
                             confirmButtonText: 'View Active Plans',
                             confirmButtonColor: '#7e57c2',
                             showCancelButton: true,
@@ -3387,7 +3388,7 @@
                     throw new Error(data.error || 'Failed to purchase plan');
                 }
                 
-                Swal.fire({
+                await Swal.fire({
                     icon: 'success',
                     title: 'Success!',
                     html: `
@@ -3413,27 +3414,27 @@
                         viewActivePlans();
                     }
                 });
-
                 await loadUserData();
                 await loadActivePlans();
+              
             } catch (error) {
                 console.error('Plan purchase error:', error);
-                Swal.fire({
+            Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    html: `
+                html: `
                         <div style="text-align: center;">
                             <div style="margin-bottom: 20px;">
                                 <i class="fas fa-exclamation-circle" style="font-size: 48px; color: #ef4444;"></i>
-                            </div>
+                        </div>
                             <p style="font-size: 16px; color: #666;">
                                 ${error.message || 'Failed to purchase plan'}
                             </p>
                             <p style="font-size: 14px; color: #888; margin-top: 10px;">
                                 Please try again or contact support if the issue persists.
                             </p>
-                        </div>
-                    `,
+                    </div>
+                `,
                     confirmButtonText: 'Contact Support',
                     confirmButtonColor: '#7e57c2',
                     showCancelButton: true,
@@ -3449,48 +3450,48 @@
 
         // Add new function to show terms and conditions
         async function showTermsAndConditions(event) {
-            event.preventDefault();
-            await Swal.fire({
-                title: 'Terms and Conditions',
-                html: `
-                    <div style="text-align: left; max-height: 70vh; overflow-y: auto; padding: 10px;">
-                        <div style="background: #fff; padding: 20px; border-radius: 12px; border: 1px solid #eee; margin-bottom: 15px;">
-                            <h4 style="color: #333; margin-bottom: 15px; font-size: 16px;">
-                                <i class="fas fa-file-contract" style="color: #7e57c2;"></i> Terms & Conditions
-                            </h4>
-                            <div style="font-size: 13px; color: #666; line-height: 1.6;">
-                                <p style="margin-bottom: 12px;">Welcome to Advanced Products! By purchasing our premium plans, you're embarking on an exciting journey towards financial growth and success.</p>
-                                <p style="margin-bottom: 12px;">Our cutting-edge platform offers unparalleled opportunities for earning and growth, backed by state-of-the-art technology and expert support.</p>
-                                <p style="margin-bottom: 12px;">As a valued member of our community, you'll enjoy exclusive benefits, premium features, and access to our elite support system.</p>
-                                <p style="margin-bottom: 12px;">We strive to maintain the highest standards of service quality and user satisfaction, ensuring a seamless experience for all our members.</p>
-                                <p style="margin-bottom: 12px;">Please note that while we endeavor to process all withdrawal requests promptly, certain circumstances beyond our control may occasionally affect the processing time or availability of withdrawal services.</p>
-                                <p style="margin-bottom: 12px;">By proceeding with your purchase, you acknowledge and accept that all investments carry inherent risks, and you are making this decision based on your own assessment and understanding.</p>
-                                <p style="margin-bottom: 12px;">We reserve the right to modify our services and terms at any time, with or without prior notice, to ensure the best possible experience for our users.</p>
-                                <p style="margin-bottom: 12px;">Your satisfaction is our top priority, and we're committed to providing you with the best possible service and support throughout your journey with us.</p>
+    event.preventDefault();
+    await Swal.fire({
+        title: 'Terms and Conditions',
+        html: `
+            <div style="text-align: left; max-height: 70vh; overflow-y: auto; padding: 10px;">
+                <div style="background: #fff; padding: 20px; border-radius: 12px; border: 1px solid #eee; margin-bottom: 15px;">
+                    <h4 style="color: #333; margin-bottom: 15px; font-size: 16px;">
+                        <i class="fas fa-file-contract" style="color: #7e57c2;"></i> Terms & Conditions
+                    </h4>
+                    <div style="font-size: 13px; color: #666; line-height: 1.6;">
+                        <p style="margin-bottom: 12px;">Welcome to Advanced Products! By purchasing our premium plans, you're embarking on an exciting journey towards financial growth and success.</p>
+                        <p style="margin-bottom: 12px;">Our cutting-edge platform offers unparalleled opportunities for earning and growth, backed by state-of-the-art technology and expert support.</p>
+                        <p style="margin-bottom: 12px;">As a valued member of our community, you'll enjoy exclusive benefits, premium features, and access to our elite support system.</p>
+                        <p style="margin-bottom: 12px;">We strive to maintain the highest standards of service quality and user satisfaction, ensuring a seamless experience for all our members.</p>
+                        <p style="margin-bottom: 12px;">Please note that while we endeavor to process all withdrawal requests promptly, certain circumstances beyond our control may occasionally affect the processing time or availability of withdrawal services.</p>
+                        <p style="margin-bottom: 12px;">By proceeding with your purchase, you acknowledge and accept that all investments carry inherent risks, and you are making this decision based on your own assessment and understanding.</p>
+                        <p style="margin-bottom: 12px;">We reserve the right to modify our services and terms at any time, with or without prior notice, to ensure the best possible experience for our users.</p>
+                        <p style="margin-bottom: 12px;">Your satisfaction is our top priority, and we're committed to providing you with the best possible service and support throughout your journey with us.</p>
                                 </div>
                             </div>
-                        <div style="background: #fff3e0; padding: 15px; border-radius: 12px; border: 1px solid #ffe0b2;">
-                            <p style="font-size: 13px; color: #e65100; margin: 0;">
-                                <i class="fas fa-exclamation-triangle" style="color: #e65100;"></i>
-                                <strong>Important Notice:</strong> While we strive to maintain uninterrupted service, please be aware that withdrawal services may be temporarily unavailable during system maintenance or due to technical issues. We recommend maintaining a diversified investment portfolio and not relying solely on our platform for financial needs.
-                            </p>
+                <div style="background: #fff3e0; padding: 15px; border-radius: 12px; border: 1px solid #ffe0b2;">
+                    <p style="font-size: 13px; color: #e65100; margin: 0;">
+                        <i class="fas fa-exclamation-triangle" style="color: #e65100;"></i>
+                        <strong>Important Notice:</strong> While we strive to maintain uninterrupted service, please be aware that withdrawal services may be temporarily unavailable during system maintenance or due to technical issues. We recommend maintaining a diversified investment portfolio and not relying solely on our platform for financial needs.
+                    </p>
                     </div>
-                    </div>
-                `,
-                confirmButtonText: 'I Understand',
-                confirmButtonColor: '#7e57c2',
-                showCancelButton: false,
-                customClass: {
-                    confirmButton: 'swal2-confirm'
-                }
-            });
+            </div>
+        `,
+        confirmButtonText: 'I Understand',
+        confirmButtonColor: '#7e57c2',
+        showCancelButton: false,
+        customClass: {
+            confirmButton: 'swal2-confirm'
         }
+    });
+}
 
         // View transaction history
         async function viewTransactionHistory() {
             try {
                 const token = localStorage.getItem('token');
-                const response = await fetch('/api/transactions', {
+                const response = await fetch(`${API_BASE_URL}/api/transactions`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -3713,7 +3714,7 @@
                     return;
                 }
 
-                const response = await fetch('/api/user/referral-code', {
+                const response = await fetch(`${API_BASE_URL}/api/user/referral-code`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -3774,7 +3775,7 @@
                     return;
                 }
 
-                const response = await fetch('/api/user/referrals', {
+                const response = await fetch(`${API_BASE_URL}/api/user/referrals`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -3824,9 +3825,9 @@
                             <div class="stat">
                                 <span class="label">Status</span>
                                 <span class="value ${member.status || 'active'}">${member.status || 'Active'}</span>
-                            </div>
-                        </div>
-                    `;
+                                            </div>
+                    </div>
+                `;
                     teamList.appendChild(memberCard);
                 });
 
@@ -3841,7 +3842,7 @@
                 if (teamList) {
                     teamList.innerHTML = `
                         <div class="error-message">
-                            <i class="fas fa-exclamation-circle"></i>
+                                <i class="fas fa-exclamation-circle"></i>
                             <p>Failed to load team data. Please try again later.</p>
                         </div>
                     `;
@@ -3860,19 +3861,19 @@
                     <div class="notification-content">
                         <div class="notification-icon">
                             <i class="fas fa-check-circle"></i>
-                        </div>
+                            </div>
                         <div class="notification-text">
                             <h4>Success</h4>
                             <p>Referral code copied to clipboard</p>
                             <div class="notification-timer">
                                 <i class="fas fa-check"></i>
                                 <span>Ready to share</span>
-                            </div>
                         </div>
+                            </div>
                     </div>
                     <button class="notification-close" onclick="this.parentElement.remove()">
                         <i class="fas fa-times"></i>
-                    </button>
+                            </button>
                 `;
                 document.body.appendChild(notification);
                 
@@ -3889,7 +3890,7 @@
                     <div class="notification-content">
                         <div class="notification-icon">
                             <i class="fas fa-exclamation-circle"></i>
-                        </div>
+                    </div>
                         <div class="notification-text">
                             <h4>Error</h4>
                             <p>Failed to copy referral code</p>
@@ -3982,7 +3983,7 @@
                             notification.remove();
                         }, 3000);
                     }).catch(err => {
-                        console.error('Failed to copy:', err);
+                console.error('Failed to copy:', err);
                         // Create a modern notification for error
                         const notification = document.createElement('div');
                         notification.className = 'modern-notification error';
@@ -4499,16 +4500,16 @@
                     <div class="notification-content">
                         <div class="notification-icon">
                             <i class="fas fa-check-circle"></i>
-                        </div>
+                                </div>
                         <div class="notification-text">
                             <h4>Success</h4>
                             <p>Referral code copied to clipboard</p>
                             <div class="notification-timer">
                                 <i class="fas fa-check"></i>
                                 <span>Ready to share</span>
-                            </div>
-                        </div>
-                    </div>
+                                    </div>
+                                    </div>
+                                    </div>
                     <button class="notification-close" onclick="this.parentElement.remove()">
                         <i class="fas fa-times"></i>
                     </button>
@@ -4528,7 +4529,7 @@
                     <div class="notification-content">
                         <div class="notification-icon">
                             <i class="fas fa-exclamation-circle"></i>
-                        </div>
+                                </div>
                         <div class="notification-text">
                             <h4>Error</h4>
                             <p>Failed to copy referral code</p>
@@ -4628,7 +4629,7 @@
             }
 
             try {
-                const response = await fetch('/api/verify-referral', {
+                const response = await fetch(`${API_BASE_URL}/api/verify-referral`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -4647,7 +4648,7 @@
                         <div class="notification-content">
                             <div class="notification-icon">
                                 <i class="fas fa-gift"></i>
-                            </div>
+                        </div>
                             <div class="notification-text">
                                 <h4>Referral Code Applied Successfully!</h4>
                                 <p>You've earned ${data.bonus} points</p>
@@ -4690,14 +4691,14 @@
         <div class="contact-modal-header">
             <h3>Contact & Support</h3>
             <p>Choose your preferred way to reach us</p>
-                        </div>
+                                </div>
         <div class="contact-options">
             <a href="https://t.me/advancedproducts4in" target="_blank" class="contact-option telegram">
                 <i class="fab fa-telegram"></i>
                 <div class="contact-option-content">
                     <h4>Telegram Support</h4>
                     <p>Quick responses, available 24/7</p>
-                                </div>
+                                    </div>
             </a>
             <a href="mailto:advancedproduct01@gmail.com" class="contact-option gmail">
                 <i class="far fa-envelope"></i>
@@ -4707,14 +4708,14 @@
                                     </div>
             </a>
                                     </div>
-                                    </div>
+                                </div>
 
     <!-- Add this HTML before the closing body tag -->
     <div class="modal-overlay" id="logoutModalOverlay"></div>
     <div class="logout-modal" id="logoutModal">
         <div class="logout-modal-icon">
             <i class="fas fa-sign-out-alt"></i>
-                                </div>
+                        </div>
         <h3>Logout Confirmation</h3>
         <p>Are you sure you want to logout from your account?</p>
         <div class="logout-buttons">
@@ -4724,3 +4725,4 @@
                         </div>
 </body>
 </html>
+
