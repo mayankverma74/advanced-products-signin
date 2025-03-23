@@ -4,229 +4,169 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="styles.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(to right, #a855f7, #9333ea);
-            color: white;
-            text-align: center;
+            font-family: 'Roboto', sans-serif;
+            background: #f3e5f5;
+            color: #4a148c;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
             padding: 20px;
         }
         .container {
-            width: 90%;
-            max-width: 1000px;
-            margin: auto;
+            width: 100%;
+            max-width: 900px;
             background: white;
             padding: 20px;
             border-radius: 15px;
-            box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
-            color: #333;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
         }
         h1 {
-            color: #6b21a8;
+            background: linear-gradient(45deg, #6a1b9a, #8e24aa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 24px;
+            margin-bottom: 20px;
         }
-        .btn {
-            background-color: #a855f7;
+        .cool-button {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(45deg, #8e24aa, #ab47bc);
             color: white;
             border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            margin: 5px;
-            border-radius: 5px;
+            border-radius: 8px;
             font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 15px;
         }
-        .btn:hover {
-            background-color: #7e22ce;
+        .cool-button:hover {
+            background: linear-gradient(45deg, #7b1fa2, #9c27b0);
         }
-        .table {
+        table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            font-size: 14px;
         }
-        .table th, .table td {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-            text-align: left;
-        }
-        .table th {
-            background-color: #9333ea;
+        thead {
+            background: #8e24aa;
             color: white;
         }
-        .actions button {
-            padding: 5px 10px;
-            margin: 3px;
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
         }
-        .wallet-form {
-            margin-top: 20px;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 10px;
+        tr:hover {
+            background: #f3e5f5;
         }
-        .wallet-form input {
-            padding: 8px;
-            margin: 5px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+        .wallet-btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
         }
-        .success-message {
-            color: #059669;
-            margin: 10px 0;
-            display: none;
+        .add-money {
+            background-color: #4caf50;
+            color: white;
         }
-        .error-message {
-            color: #dc2626;
-            margin: 10px 0;
-            display: none;
+        .deduct-money {
+            background-color: #f44336;
+            color: white;
+        }
+        .add-money:hover {
+            background-color: #388e3c;
+        }
+        .deduct-money:hover {
+            background-color: #d32f2f;
+        }
+        #logoutBtn {
+            background: linear-gradient(45deg, #d32f2f, #e53935);
+            margin-top: 15px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Admin Dashboard</h1>
-        <button class="btn" onclick="fetchUsers()">View Users</button>
-        <button class="btn" onclick="fetchTransactions()">View Transactions</button>
-        <button class="btn" onclick="logout()">Logout</button>
-        
-        <div id="users"></div>
-        <div id="transactions"></div>
-        
-        <div class="wallet-form">
-            <h3>Update User Wallet</h3>
-            <input type="text" id="userPhone" placeholder="User Phone" />
-            <input type="number" id="walletAmount" placeholder="Amount" />
-            <button class="btn" onclick="updateWallet(true)">Add Money</button>
-            <button class="btn" onclick="updateWallet(false)">Remove Money</button>
-            <div id="walletMessage" class="success-message"></div>
-        </div>
+        <button id="logoutBtn" class="cool-button">Logout</button>
+        <h2>Registered Users</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Full Name</th>
+                    <th>Phone</th>
+                    <th>Wallet Balance</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="usersTable"></tbody>
+        </table>
     </div>
-
     <script>
-        const token = localStorage.getItem("adminToken");
-        if (!token) {
-            alert("Access Denied! Please login as Admin.");
-            window.location.href = "admin-login.html";
-        }
-
-        function showMessage(message, isError = false) {
-            const messageDiv = document.getElementById('walletMessage');
-            messageDiv.textContent = message;
-            messageDiv.style.display = 'block';
-            messageDiv.className = isError ? 'error-message' : 'success-message';
-            setTimeout(() => {
-                messageDiv.style.display = 'none';
-            }, 3000);
-        }
-
-        function fetchUsers() {
-            fetch("http://localhost:3000/admin/users", {
-                headers: { "Authorization": `Bearer ${token}` }
-            })
-            .then(res => res.json())
-            .then(data => {
-                let output = "<h3>Registered Users:</h3><table class='table'><tr><th>Name</th><th>Phone</th><th>Wallet Balance</th></tr>";
-                data.forEach(user => {
-                    output += `<tr><td>${user.fullName}</td><td>${user.phone}</td><td>₹${user.wallet || 0}</td></tr>`;
-                });
-                output += "</table>";
-                document.getElementById("users").innerHTML = output;
-            })
-            .catch(err => {
-                showMessage("Error fetching users", true);
-            });
-        }
-
-        function fetchTransactions() {
-            fetch("http://localhost:3000/admin/transactions", {
-                headers: { "Authorization": `Bearer ${token}` }
-            })
-            .then(res => res.json())
-            .then(data => {
-                let output = "<h3>Transactions:</h3><table class='table'><tr><th>User</th><th>Type</th><th>Amount</th><th>Status</th><th>Actions</th></tr>";
-                data.transactions.forEach(txn => {
-                    output += `<tr>
-                        <td>${txn.userName}</td>
-                        <td>${txn.type}</td>
-                        <td>₹${txn.amount}</td>
-                        <td>${txn.status}</td>
-                        <td class='actions'>
-                            ${txn.status === 'pending' ? `<button onclick="approveTransaction('${txn._id}', '${txn.type}')">Approve</button>` : ''}
-                        </td>
-                    </tr>`;
-                });
-                output += "</table>";
-                document.getElementById("transactions").innerHTML = output;
-            })
-            .catch(err => {
-                showMessage("Error fetching transactions", true);
-            });
-        }
-
-        function updateWallet(isAdd) {
-            const phone = document.getElementById("userPhone").value;
-            const amount = document.getElementById("walletAmount").value;
-
-            if (!phone || !amount) {
-                showMessage("Please fill all fields", true);
+        document.addEventListener('DOMContentLoaded', async () => {
+            const adminToken = localStorage.getItem('adminToken');
+            if (!adminToken) {
+                window.location.href = '/admin-login.html';
                 return;
             }
+            try {
+                const response = await fetch('http://localhost:3000/api/admin/users', {
+                    headers: { 'Authorization': `Bearer ${adminToken}` }
+                });
+                const users = await response.json();
+                const usersTable = document.getElementById('usersTable');
+                users.forEach(user => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${user.full_name}</td>
+                        <td>${user.phone}</td>
+                        <td>${user.wallet_balance}</td>
+                        <td>
+                            <button class='wallet-btn add-money' onclick="updateWallet('${user.phone}', 100)">+100</button>
+                            <button class='wallet-btn deduct-money' onclick="updateWallet('${user.phone}', -100)">-100</button>
+                        </td>
+                    `;
+                    usersTable.appendChild(row);
+                });
+            } catch (error) {
+                Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to load users' });
+            }
+        });
 
-            fetch("http://localhost:3000/admin/update-wallet", {
-                method: "POST",
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ phone, amount: Number
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (res.ok) {
-                    showMessage(data.message);
-                    document.getElementById("userPhone").value = "";
-                    document.getElementById("walletAmount").value = "";
-                    fetchUsers();
+        async function updateWallet(phone, amount) {
+            const adminToken = localStorage.getItem('adminToken');
+            try {
+                const response = await fetch('http://localhost:3000/api/admin/update-wallet', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${adminToken}`
+                    },
+                    body: JSON.stringify({ phone, amount })
+                });
+                if (response.ok) {
+                    Swal.fire({ icon: 'success', title: 'Success', text: 'Wallet updated' });
+                    setTimeout(() => window.location.reload(), 1500);
                 } else {
-                    showMessage(data.message, true);
+                    throw new Error('Failed to update wallet');
                 }
-            })
-            .catch(err => {
-                showMessage("Error updating wallet", true);
-            });
+            } catch (error) {
+                Swal.fire({ icon: 'error', title: 'Error', text: error.message });
+            }
         }
 
-        function approveTransaction(id, type) {
-            const url = type === 'deposit' ? "/admin/approve-deposit" : "/admin/approve-withdrawal";
-            fetch(`http://localhost:3000${url}`, {
-                method: "POST",
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ transactionId: id })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (res.ok) {
-                    showMessage(data.message);
-                    fetchTransactions();
-                    fetchUsers();
-                } else {
-                    showMessage(data.message, true);
-                }
-            })
-            .catch(err => {
-                showMessage("Error approving transaction", true);
-            });
-        }
-
-        function logout() {
-            localStorage.removeItem("adminToken");
-            window.location.href = "admin-login.html";
-        }
-
-        // Fetch initial data
-        fetchUsers();
-        fetchTransactions();
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.removeItem('adminToken');
+            window.location.href = '/admin-login.html';
+        });
     </script>
 </body>
 </html>
