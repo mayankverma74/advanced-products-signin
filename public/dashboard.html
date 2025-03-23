@@ -2251,7 +2251,7 @@
                     <ul class="plan-features">
                         <li class="plan-feature">
                             <i class="fas fa-check"></i>
-                            Daily Points: 340
+                            Daily Points: 50
                         </li>
                         <li class="plan-feature">
                             <i class="fas fa-check"></i>
@@ -2259,7 +2259,7 @@
                         </li>
                         <li class="plan-feature">
                             <i class="fas fa-check"></i>
-                            Total Points: 10,200
+                            Total Points: 1,500
                         </li>
                     </ul>
                     <button class="plan-button" onclick="purchasePlan('basic', 'Basic Plan', 299)">
@@ -2276,7 +2276,7 @@
                     <ul class="plan-features">
                         <li class="plan-feature">
                             <i class="fas fa-check"></i>
-                            Daily Points: 740
+                            Daily Points: 80
                         </li>
                         <li class="plan-feature">
                             <i class="fas fa-check"></i>
@@ -2284,7 +2284,7 @@
                         </li>
                         <li class="plan-feature">
                             <i class="fas fa-check"></i>
-                            Total Points: 22,200
+                            Total Points: 2,400
                         </li>
                     </ul>
                     <button class="plan-button" onclick="purchasePlan('premium', 'Premium Plan', 720)">
@@ -2301,7 +2301,7 @@
                     <ul class="plan-features">
                         <li class="plan-feature">
                             <i class="fas fa-check"></i>
-                            Daily Points: 1240
+                            Daily Points: 120
                         </li>
                         <li class="plan-feature">
                             <i class="fas fa-check"></i>
@@ -2309,7 +2309,7 @@
                         </li>
                         <li class="plan-feature">
                             <i class="fas fa-check"></i>
-                            Total Points: 37,200
+                            Total Points: 3,600
                         </li>
                     </ul>
                     <button class="plan-button" onclick="purchasePlan('vip', 'VIP Plan', 1200)">
@@ -2326,7 +2326,7 @@
                     <ul class="plan-features">
                         <li class="plan-feature">
                             <i class="fas fa-check"></i>
-                            Daily Points: 1940
+                            Daily Points: 160
                         </li>
                         <li class="plan-feature">
                             <i class="fas fa-check"></i>
@@ -2334,7 +2334,7 @@
                         </li>
                         <li class="plan-feature">
                             <i class="fas fa-check"></i>
-                            Total Points: 58,200
+                            Total Points: 4,800
                         </li>
                     </ul>
                     <button class="plan-button" onclick="purchasePlan('elite', 'Elite Plan', 1499)">
@@ -2351,7 +2351,7 @@
                     <ul class="plan-features">
                         <li class="plan-feature">
                             <i class="fas fa-check"></i>
-                            Daily Points: 3340
+                            Daily Points: 200
                         </li>
                         <li class="plan-feature">
                             <i class="fas fa-check"></i>
@@ -2359,7 +2359,7 @@
                         </li>
                         <li class="plan-feature">
                             <i class="fas fa-check"></i>
-                            Total Points: 100,200
+                            Total Points: 6,000
                         </li>
                     </ul>
                     <button class="plan-button" onclick="purchasePlan('royal', 'Royal Plan', 2000)">
@@ -2376,7 +2376,7 @@
                     <ul class="plan-features">
                         <li class="plan-feature">
                             <i class="fas fa-check"></i>
-                            Daily Points: 6640
+                            Daily Points: 400
                         </li>
                         <li class="plan-feature">
                             <i class="fas fa-check"></i>
@@ -2384,7 +2384,7 @@
                         </li>
                         <li class="plan-feature">
                             <i class="fas fa-check"></i>
-                            Total Points: 199,200
+                            Total Points: 12,000
                         </li>
                     </ul>
                     <button class="plan-button" onclick="purchasePlan('diamond', 'Diamond Plan', 3400)">
@@ -2404,7 +2404,7 @@
                     <ul class="plan-features">
                         <li class="plan-feature">
                             <i class="fas fa-check"></i>
-                            Daily Points: 500
+                            Daily Points: 160
                         </li>
                         <li class="plan-feature">
                             <i class="fas fa-check"></i>
@@ -2412,7 +2412,7 @@
                         </li>
                         <li class="plan-feature">
                             <i class="fas fa-check"></i>
-                            Total Points: 3,500
+                            Total Points: 1,120
                         </li>
                     </ul>
                     <button class="plan-button" onclick="purchasePlan('weekly_basic', 'Weekly Basic', 540)">
@@ -2429,7 +2429,7 @@
                     <ul class="plan-features">
                         <li class="plan-feature">
                             <i class="fas fa-check"></i>
-                            Daily Points: 1640
+                            Daily Points: 360
                         </li>
                         <li class="plan-feature">
                             <i class="fas fa-check"></i>
@@ -2437,7 +2437,7 @@
                         </li>
                         <li class="plan-feature">
                             <i class="fas fa-check"></i>
-                            Total Points: 11,480
+                            Total Points: 2,520
                         </li>
                     </ul>
                     <button class="plan-button" onclick="purchasePlan('weekly_advanced', 'Weekly Advanced', 1240)">
@@ -2454,7 +2454,7 @@
                     <ul class="plan-features">
                         <li class="plan-feature">
                             <i class="fas fa-check"></i>
-                            Daily Points: 2740
+                            Daily Points: 600
                         </li>
                         <li class="plan-feature">
                             <i class="fas fa-check"></i>
@@ -2462,7 +2462,7 @@
                         </li>
                         <li class="plan-feature">
                             <i class="fas fa-check"></i>
-                            Total Points: 19,180
+                            Total Points: 4,200
                         </li>
                     </ul>
                     <button class="plan-button" onclick="purchasePlan('weekly_premium', 'Weekly Premium', 1799)">
@@ -2810,19 +2810,20 @@
         const API_BASE_URL = 'https://advanced-products-backend.onrender.com';
         // Define plans variable at the top
         const plans = {
-            monthly: [
-                { id: 'plan1', name: 'Basic Plan', price: 299, dailyPoints: 340 },
-                { id: 'plan2', name: 'Standard Plan', price: 720, dailyPoints: 740 },
-                { id: 'plan3', name: 'Premium Plan', price: 1200, dailyPoints: 1240 },
-                { id: 'plan4', name: 'Elite Plan', price: 1499, dailyPoints: 1940 },
-                { id: 'plan5', name: 'Ultimate Plan', price: 2000, dailyPoints: 3340 }
-            ],
-            weekly: [
-                { id: 'plan6', name: 'Weekly Basic', price: 540, dailyPoints: 500 },
-                { id: 'plan7', name: 'Weekly Premium', price: 1240, dailyPoints: 1640 },
-                { id: 'plan8', name: 'Weekly Elite', price: 1799, dailyPoints: 2740 }
-            ]
-        };
+    monthly: [
+        { id: 'plan1', name: 'Basic Plan', price: 299, dailyPoints: 50 },
+        { id: 'plan2', name: 'Premium Plan', price: 720, dailyPoints: 80 },
+        { id: 'plan3', name: 'VIP Plan', price: 1200, dailyPoints: 120 },
+        { id: 'plan4', name: 'Elite Plan', price: 1499, dailyPoints: 160 },
+        { id: 'plan5', name: 'Royal Plan', price: 2000, dailyPoints: 200 },
+        { id: 'plan6', name: 'Diamond Plan', price: 3400, dailyPoints: 400 }
+    ],
+    weekly: [
+        { id: 'plan7', name: 'Weekly Basic Plan', price: 540, dailyPoints: 160 },
+        { id: 'plan8', name: 'Weekly Advanced Plan', price: 1240, dailyPoints: 360 },
+        { id: 'plan9', name: 'Weekly Premium Plan', price: 1799, dailyPoints: 600 }
+    ]
+};
 
         // Initialize all components after DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
@@ -4200,56 +4201,7 @@
             contactModalOverlay.addEventListener('click', closeContactModal);
         }
 
-        // List of Indian names (expanded with more combinations)
-        const indianNames = [
-            // First set of names
-            "Aarav Kumar", "Aditi Sharma", "Aishwarya Patel", "Akash Singh", "Amrita Verma",
-            "Ananya Reddy", "Arjun Malhotra", "Avni Gupta", "Bharat Kumar", "Chitra Iyer",
-            "Deepak Sharma", "Esha Singh", "Gaurav Patel", "Harshita Verma", "Ishaan Reddy",
-            "Jaya Malhotra", "Karthik Kumar", "Lakshmi Gupta", "Madhav Sharma", "Neha Singh",
-            "Om Patel", "Priya Verma", "Rahul Reddy", "Sanjana Malhotra", "Tanvi Kumar",
-            "Uday Gupta", "Vanya Sharma", "Yash Singh", "Zara Patel", "Aryan Verma",
-            
-            // Second set of names
-            "Bhavya Reddy", "Chirag Malhotra", "Disha Kumar", "Eshaan Gupta", "Fatima Sharma",
-            "Gita Singh", "Harsh Patel", "Indira Verma", "Jatin Reddy", "Kavita Malhotra",
-            "Lalit Kumar", "Meera Gupta", "Naveen Sharma", "Ojas Singh", "Pooja Patel",
-            "Qasim Verma", "Ravi Reddy", "Sneha Malhotra", "Tarun Kumar", "Uma Gupta",
-            "Varun Sharma", "Wahid Singh", "Xavier Patel", "Yamini Verma", "Zain Reddy",
-            
-            // Third set of names
-            "Aaradhya Sharma", "Bharat Singh", "Chandni Patel", "Dev Kumar", "Ekta Verma",
-            "Firoz Khan", "Gauri Reddy", "Himanshu Malhotra", "Ira Gupta", "Jatin Kumar",
-            "Kavya Sharma", "Lakshay Singh", "Maya Patel", "Nitin Verma", "Ojaswini Reddy",
-            "Pranav Malhotra", "Qamar Khan", "Rahul Gupta", "Sneha Kumar", "Tanay Sharma",
-            "Uma Singh", "Vikram Patel", "Waseem Khan", "Xena Reddy", "Yash Malhotra",
-            
-            // Fourth set of names
-            "Aanya Gupta", "Brijesh Kumar", "Chitra Sharma", "Dinesh Singh", "Esha Patel",
-            "Farhan Khan", "Geeta Verma", "Harshit Reddy", "Isha Malhotra", "Jagdish Gupta",
-            "Kirti Kumar", "Lakshmi Sharma", "Mohan Singh", "Nisha Patel", "Om Prakash",
-            "Pratibha Verma", "Qutub Khan", "Rajesh Reddy", "Suman Malhotra", "Tushar Gupta",
-            "Usha Kumar", "Vijay Sharma", "Wahid Khan", "Xavier Reddy", "Yogesh Malhotra",
-            
-            // Fifth set of names
-            "Aarav Gupta", "Bhavya Kumar", "Chandni Sharma", "Dev Singh", "Ekta Patel",
-            "Firoz Verma", "Gauri Reddy", "Himanshu Malhotra", "Ira Khan", "Jatin Gupta",
-            "Kavya Kumar", "Lakshay Sharma", "Maya Singh", "Nitin Patel", "Ojaswini Verma",
-            "Pranav Reddy", "Qamar Malhotra", "Rahul Khan", "Sneha Gupta", "Tanay Kumar",
-            "Uma Sharma", "Vikram Singh", "Waseem Patel", "Xena Verma", "Yash Reddy"
-        ];
-
-        // Function to generate Indian-style phone number
-        function generatePhoneNumber() {
-            const prefixes = [
-                "9244", "7566", "9926", "9876", "8765", "7654", "6543", "5432", "4321", "3210",
-                "9877", "8766", "7655", "6544", "5433", "4322", "3211", "2100", "9878", "8767",
-                "7656", "6545", "5434", "4323", "3212", "2101", "9879", "8768", "7657", "6546"
-            ];
-            const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
-            return prefix + "XXXXX";
-        }
-
+     
         // Function to create notification HTML
         function createNotification(type, message, plan = null) {
             // Remove any existing notifications

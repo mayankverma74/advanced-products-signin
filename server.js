@@ -1059,31 +1059,31 @@ app.post('/api/plans/purchase', authenticateToken, async (req, res) => {
         let dailyPoints;
         switch(planPrice) {
             case 299:
-                dailyPoints = 340;
+                dailyPoints = 50;
                 break;
             case 720:
-                dailyPoints = 740;
+                dailyPoints = 80;
                 break;
             case 1200:
-                dailyPoints = 1240;
+                dailyPoints = 100;
                 break;
             case 1499:
-                dailyPoints = 1940;
+                dailyPoints = 160;
                 break;
             case 2000:
-                dailyPoints = 3340;
+                dailyPoints = 200;
                 break;
             case 540:
-                dailyPoints = 500;
+                dailyPoints = 160;
                 break;
             case 3400:
-                dailyPoints = 6640;
+                dailyPoints = 400;
                 break;
             case 1240:
-                dailyPoints = 1640;
+                dailyPoints = 360;
                 break;
             case 1799:
-                dailyPoints = 2740;
+                dailyPoints = 600;
                 break;
             default:
                 dailyPoints = Math.floor(planPrice * 1.1); // Default to 10% more if price not in multiplier
@@ -1271,7 +1271,7 @@ app.post('/api/update-points', async (req, res) => {
 cron.schedule('0 0 * * *', async () => {
     try {
         console.log('Running daily points update...');
-        const response = await axios.post('http://localhost:3000/api/update-points');
+        const response = await axios.post(`${process.env.API_BASE_URL}/api/update-points`);
         console.log('Points update completed:', response.data);
     } catch (error) {
         console.error('Error in cron job:', error);
