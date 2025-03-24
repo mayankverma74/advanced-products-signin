@@ -2075,6 +2075,26 @@
             }
         }
 
+        .qr-code-section {
+            text-align: center;
+            padding: 15px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin: 15px auto;
+            max-width: 220px;
+        }
+
+        .qr-code-section img {
+            max-width: 180px;
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            display: block;
+            margin: 0 auto;
+        }
+
         .referral-actions {
             display: flex;
             gap: 10px;
@@ -2539,11 +2559,22 @@
             <div class="modal-body">
                 <form id="depositForm" class="modern-form" onsubmit="handleDepositSubmission(event)">
                     <div class="payment-section">
-                        <h3>Make Payment</h3>
-                        <p>Click the button below to make your payment through Razorpay</p>
-                        <a href="https://razorpay.me/@ypsmart" target="_blank" class="razorpay-link">
-                            <i class="fas fa-credit-card"></i> Pay via Razorpay
-                        </a>
+                        <h3>Make UPI Payment</h3>
+                        <p>Scan QR code or pay to our UPI ID below</p>
+                        <div class="upi-payment-container">
+                            <div class="qr-code-section">
+                                <img src="qrpayment.jpg" alt="UPI QR Code" class="qr-code-image">
+                            </div>
+                            <div class="upi-details">
+                                <h4>UPI ID</h4>
+                                <div class="upi-id-container">
+                                    <span class="upi-id">paytmqr2810050501011k9vdsfgphfw@paytm</span>
+                                    <button type="button" class="copy-upi-btn" onclick="copyUpiId()">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="divider">
