@@ -221,6 +221,37 @@ app.post('/api/verify-otp', async (req, res) => {
     }
 });
 
+app.post('/api/claim-points', authenticateToken, async (req, res) => {
+    const userId = req.user.userId; // Get user ID from token
+    const currentTime = new Date();
+
+    try {
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Check if the user can claim points
+        if (user.lastClaimTime) {
+            const lastClaimTime = new Date(user.lastClaimTime);
+            const oneHour = 60 * 60 * 1000; // 1 hour in milliseconds
+
+            if (currentTime - lastClaimTime < oneHour) {
+                return res.status(403).json({ error: 'You can only claim points once every hour.' });
+            }
+        }
+
+        // Update user's points and last claim time
+        user.points += 2; // Add 2 points
+        user.lastClaimTime = currentTime; // Update last claim time
+        await user.save();
+
+        res.json({ message: 'Points claimed successfully!', newPoints: user.points });
+    } catch (error) {
+        console.error('Error claiming points:', error);
+        res.status(500).json({ error: 'An error occurred while claiming points.' });
+    }
+});
 // Unified login endpoint
 app.post('/api/login', async (req, res) => {
     try {

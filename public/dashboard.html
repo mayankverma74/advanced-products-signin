@@ -275,7 +275,31 @@
             margin-right: 8px;
             animation: pulse 2s infinite;
         }
+        .claim-points {
+    margin-top: 20px; /* Space above the claim points section */
+}
 
+.claim-button {
+    background-color: #673ab7; /* Primary color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.claim-button:hover {
+    background-color: #5e35b1; /* Darker shade on hover */
+    transform: scale(1.05);
+}
+
+.claim-message {
+    margin-top: 10px;
+    font-size: 14px;
+    text-align: center;
+} 
         .logout {
             border-top: 1px solid rgba(0,0,0,0.05);
             margin-top: 8px;
@@ -2172,13 +2196,20 @@
                         <div class="menu-icon">
                             <i class="fas fa-gift"></i>
                                 </div>
-                        <span>Refer & Earn</span>
-                        <i class="fas fa-chevron-right menu-indicator"></i>
-                    </a>
-                    <a href="#" class="menu-item" onclick="showContactModal()">
-                        <div class="menu-icon">
-                            <i class="fas fa-headset"></i>
-                                </div>
+                                <span>Refer & Earn</span>
+                                <i class="fas fa-chevron-right menu-indicator"></i>
+                            </a>
+                                <a href="#" class="menu-item" onclick="openClaimPoints()">
+                                    <div class="menu-icon">
+                                        <i class="fas fa-gift"></i>
+                                    </div>
+                                    <span>Claim Points</span>
+                                    <i class="fas fa-chevron-right menu-indicator"></i>
+                                </a>      
+                                <a href="#" class="menu-item" onclick="showContactModal()">
+                                    <div class="menu-icon">
+                                        <i class="fas fa-headset"></i>
+                                    </div>
                         <span>Contact & Support</span>
                         <i class="fas fa-chevron-right menu-indicator"></i>
                     </a>
@@ -4641,6 +4672,46 @@
                 showNotification('Failed to apply referral code', 'error');
             }
         });
+
+        function openClaimPoints() {
+    const token = localStorage.getItem('token'); // Retrieve the token from localStorage
+
+    fetch(`${API_BASE_URL}/api/claim-points`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}` // Use the token for authorization
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to claim points');
+        }
+        return response.json();
+    })
+    .then(data => {
+        const messageElement = document.getElementById('claimMessage');
+        
+        if (data.message) {
+            messageElement.textContent = `Successfully claimed 2 points! Next claim available in 1 hour.`;
+            messageElement.style.color = 'green';
+            // Disable the button for 1 hour
+            document.getElementById('claimPointsButton').disabled = true;
+            setTimeout(() => {
+                document.getElementById('claimPointsButton').disabled = false;
+            }, 3600000); // 1 hour in milliseconds
+        } else {
+            messageElement.textContent = data.error;
+            messageElement.style.color = 'red';
+        }
+    })
+    .catch(error => {
+        console.error('Error claiming points:', error);
+        const messageElement = document.getElementById('claimMessage');
+        messageElement.textContent = 'An error occurred while claiming points. Please try again.';
+        messageElement.style.color = 'red';
+    });
+}
     </script>
 
     <!-- Add this HTML before the closing body tag -->
