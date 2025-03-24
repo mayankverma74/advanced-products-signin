@@ -2227,6 +2227,9 @@
 
     <!-- Main Content -->
     <div class="main-content">
+        <!-- Claim Message Section -->
+    <div id="claimMessage" style="margin-top: 20px;"></div>
+
         <!-- Balance Section -->
         <section class="balance-section">
             <div class="balance-card">
@@ -4691,27 +4694,34 @@
     })
     .then(data => {
         const messageElement = document.getElementById('claimMessage');
-        
-        if (data.message) {
-            messageElement.textContent = `Successfully claimed 2 points! Next claim available in 1 hour.`;
-            messageElement.style.color = 'green';
-            // Disable the button for 1 hour
-            document.getElementById('claimPointsButton').disabled = true;
-            setTimeout(() => {
-                document.getElementById('claimPointsButton').disabled = false;
-            }, 3600000); // 1 hour in milliseconds
+        const claimButton = document.getElementById('claimPointsButton');
+
+        if (messageElement && claimButton) {
+            if (data.message) {
+                messageElement.textContent = `Successfully claimed 2 points! Next claim available in 1 hour.`;
+                messageElement.style.color = 'green';
+                claimButton.disabled = true;
+                setTimeout(() => {
+                    claimButton.disabled = false;
+                }, 3600000); // 1 hour in milliseconds
+            } else {
+                messageElement.textContent = data.error;
+                messageElement.style.color = 'red';
+            }
         } else {
-            messageElement.textContent = data.error;
-            messageElement.style.color = 'red';
+            console.error('Required elements not found in the DOM.');
         }
     })
     .catch(error => {
         console.error('Error claiming points:', error);
         const messageElement = document.getElementById('claimMessage');
-        messageElement.textContent = 'An error occurred while claiming points. Please try again.';
-        messageElement.style.color = 'red';
+        if (messageElement) {
+            messageElement.textContent = 'An error occurred while claiming points. Please try again.';
+            messageElement.style.color = 'red';
+        }
     });
-}
+} 
+
     </script>
 
     <!-- Add this HTML before the closing body tag -->
