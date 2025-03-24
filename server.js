@@ -1199,7 +1199,7 @@ app.post('/api/plans/purchase', authenticateToken, async (req, res) => {
 });
 
 // Update points endpoint (to be called by a cron job)
-app.post('/api/update-points', async (req, res) => {
+async function updateDailyPoints() {
     let session = null;
     try {
         // Start transaction session
@@ -1247,34 +1247,44 @@ app.post('/api/update-points', async (req, res) => {
         // Commit the transaction
         await session.commitTransaction();
         console.log('Daily points update completed successfully');
-        
-        res.json({ 
-            message: 'Points updated successfully',
-            usersUpdated: users.length
-        });
+        return { success: true, message: 'Points updated successfully' };
     } catch (error) {
         console.error('Error updating points:', error);
-        
         if (session) {
             await session.abortTransaction();
         }
-        
-        res.status(500).json({ error: 'Failed to update points' });
+        throw error;
     } finally {
         if (session) {
-            await session.endSession();
+            session.endSession();
         }
     }
-});
+}
 
-// Set up cron job to update points daily at midnight
+// Schedule daily points update
 cron.schedule('0 0 * * *', async () => {
     try {
         console.log('Running daily points update...');
-        const response = await axios.post(`${process.env.API_BASE_URL}/api/update-points`);
-        console.log('Points update completed:', response.data);
+        await updateDailyPoints();
+        console.log('Points update completed successfully');
     } catch (error) {
         console.error('Error in cron job:', error);
+    }
+}, {
+    timezone: "Asia/Kolkata" // Set timezone to IST
+});
+
+// Keep the endpoint for manual updates if needed
+app.post('/api/update-points', async (req, res) => {
+    try {
+        const result = await updateDailyPoints();
+        res.json(result);
+    } catch (error) {
+        console.error('Error in update points endpoint:', error);
+        res.status(500).json({ 
+            error: 'Failed to update points',
+            details: error.message
+        });
     }
 });
 
