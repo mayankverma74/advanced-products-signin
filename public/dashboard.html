@@ -4677,50 +4677,74 @@
         });
 
         function openClaimPoints() {
-    const token = localStorage.getItem('token');
-    const messageElement = document.getElementById('claimMessage');
-    const claimButton = document.getElementById('claimPointsButton');
-
-    if (!messageElement || !claimButton) {
-        console.error('Required elements not found in the DOM');
-        showNotification('System error. Please refresh the page.', 'error');
-        return;
+    const modal = document.getElementById('claimPointsModal');
+    if (modal) {
+        modal.style.display = 'block';
+    } else {
+        showNotification('Error loading claim points modal', 'error');
     }
+}
 
-    fetch(`${API_BASE_URL}/api/claim-points`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            showNotification('Successfully claimed 2 points! Next claim available in 1 hour.', 'success');
-            messageElement.textContent = 'Successfully claimed 2 points! Next claim available in 1 hour.';
-            messageElement.style.color = 'green';
-            claimButton.disabled = true;
-            setTimeout(() => {
-                claimButton.disabled = false;
-                messageElement.textContent = '';
-            }, 3600000);
+function closeClaimPointsModal() {
+    const modal = document.getElementById('claimPointsModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+async function claimPoints() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/claim-points`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            showNotification('Points claimed successfully!', 'success');
+            closeClaimPointsModal();
+            // Refresh points display
+            updateUserPoints();
         } else {
-            const errorMsg = data.error || 'Unable to claim points at this time';
-            showNotification(errorMsg, 'error');
-            messageElement.textContent = errorMsg;
-            messageElement.style.color = 'red';
+            throw new Error(data.message || 'Failed to claim points');
         }
-    })
-    .catch(error => {
-        console.error('Error claiming points:', error);
-        const errorMsg = 'Network error. Please try again later.';
-        showNotification(errorMsg, 'error');
-        messageElement.textContent = errorMsg;
-        messageElement.style.color = 'red';
-    });
+    } catch (error) {
+        showNotification(error.message, 'error');
+    }
+}
 } 
 
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `modern-notification ${type}`;
+        notification.innerHTML = `
+            <div class="notification-content">
+                <div class="notification-icon">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+                </div>
+                <div class="notification-text">
+                    <h4>${type.charAt(0).toUpperCase() + type.slice(1)}</h4>
+                    <p>${message}</p>
+                    <div class="notification-timer">
+                        <i class="fas ${type === 'success' ? 'fa-check' : type === 'error' ? 'fa-times-circle' : 'fa-info'}"></i>
+                        <span>${type === 'success' ? 'Success' : type === 'error' ? 'Error' : 'Info'}</span>
+                    </div>
+                </div>
+            </div>
+            <button class="notification-close" onclick="this.parentElement.remove()">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, type === 'error' ? 5000 : 3000);
+    }
     </script>
 
     <!-- Add this HTML before the closing body tag -->
@@ -4752,6 +4776,18 @@
                                 </div>
 
     <!-- Add this HTML before the closing body tag -->
+    <!-- Claim Points Modal -->
+    <div id="claimPointsModal" class="modal">
+        <div class="modal-content">
+            <h2>Claim Your Points</h2>
+            <p>You have points available to claim!</p>
+            <div class="modal-buttons">
+                <button onclick="claimPoints()" class="claim-button">Claim Now</button>
+                <button onclick="closeClaimPointsModal()" class="cancel-button">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="logoutModalOverlay"></div>
     <div class="logout-modal" id="logoutModal">
         <div class="logout-modal-icon">
