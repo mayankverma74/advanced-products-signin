@@ -1592,49 +1592,17 @@
                 // For manage action, show action selection first
                 if (action === 'manage') {
                     const result = await Swal.fire({
-                        title: 'User Balance Management',
-                        html: `
-                            <div class="management-options">
-                                <h3>What would you like to manage?</h3>
-                                <div class="option-buttons">
-                                    <button class="swal2-confirm swal2-styled" onclick="Swal.clickConfirm()" style="background-color: #4CAF50 !important;">Manage Wallet</button>
-                                    <button class="swal2-deny swal2-styled" onclick="Swal.clickDeny()" style="background-color: #673ab7 !important;">Manage Points</button>
-                                </div>
-                            </div>
-                        `,
-                        showCancelButton: true,
-                        showConfirmButton: false,
-                        showDenyButton: false,
-                        cancelButtonText: 'Cancel',
-                        cancelButtonColor: '#6c757d'
-                    });
-
-                    if (result.dismiss === Swal.DismissReason.cancel) {
-                        return;
-                    }
-
-                    const manageType = result.isConfirmed ? 'wallet' : 'points';
-                    
-                    // Second dialog for add/remove action
-                    const actionResult = await Swal.fire({
-                        title: `${manageType.charAt(0).toUpperCase() + manageType.slice(1)} Management`,
+                        title: 'Wallet Management',
                         text: 'What would you like to do?',
                         icon: 'question',
                         showCancelButton: true,
                         showDenyButton: true,
-                        confirmButtonText: `Add ${manageType === 'wallet' ? 'Money' : 'Points'}`,
-                        denyButtonText: `Remove ${manageType === 'wallet' ? 'Money' : 'Points'}`,
+                        confirmButtonText: 'Add Money',
+                        denyButtonText: 'Remove Money',
                         confirmButtonColor: '#4CAF50',
                         denyButtonColor: '#f44336',
                         cancelButtonColor: '#673ab7'
                     });
-
-                    if (actionResult.dismiss === Swal.DismissReason.cancel) {
-                        return;
-                    }
-
-                    action = actionResult.isConfirmed ? 'add' : 'remove';
-                    const isPoints = manageType === 'points';
 
                     if (result.dismiss === Swal.DismissReason.cancel) {
                         return;
@@ -1645,10 +1613,10 @@
 
                 // Get amount from user
                 const result = await Swal.fire({
-                    title: `${action === 'add' ? 'Add' : 'Remove'} ${isPoints ? 'Points' : 'Money'}`,
+                    title: `${action === 'add' ? 'Add' : 'Remove'} Money`,
                     input: 'number',
-                    inputLabel: isPoints ? 'Points' : 'Amount (₹)',
-                    inputPlaceholder: `Enter ${isPoints ? 'points' : 'amount'}`,
+                    inputLabel: 'Amount (₹)',
+                    inputPlaceholder: 'Enter amount',
                     showCancelButton: true,
                     confirmButtonText: 'Proceed',
                     confirmButtonColor: action === 'add' ? '#4CAF50' : '#f44336',
@@ -1656,13 +1624,13 @@
                     inputValidator: (value) => {
                         const amount = parseInt(value);
                         if (!amount || isNaN(amount)) {
-                            return `Please enter a valid ${isPoints ? 'points value' : 'amount'}`;
+                            return 'Please enter a valid amount';
                         }
                         if (amount < 1) {
-                            return `${isPoints ? 'Points' : 'Amount'} must be at least ${isPoints ? '1' : '₹1'}`;
+                            return 'Amount must be at least ₹1';
                         }
-                        if (amount > (isPoints ? 1000000 : 100000)) {
-                            return `${isPoints ? 'Points' : 'Amount'} cannot exceed ${isPoints ? '1,000,000' : '₹100,000'}`;
+                        if (amount > 100000) {
+                            return 'Amount cannot exceed ₹100,000';
                         }
                         return null;
                     }
@@ -1675,8 +1643,7 @@
                 const amount = parseInt(result.value);
 
                 // Make API call without showing loading state
-                const endpoint = isPoints ? 'points' : 'wallet';
-                const response = await fetch(`/api/admin/users/${encodeURIComponent(userId)}/${endpoint}`, {
+                const response = await fetch(`/api/admin/users/${encodeURIComponent(userId)}/wallet`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -1698,7 +1665,7 @@
                 await Swal.fire({
                     icon: 'success',
                     title: 'Success!',
-                    text: `Successfully ${action === 'add' ? 'added' : 'removed'} ${isPoints ? `${amount} points` : `₹${amount}`}`,
+                    text: `Successfully ${action === 'add' ? 'added' : 'removed'} ₹${amount}`,
                     timer: 1000,
                     showConfirmButton: false
                 });
