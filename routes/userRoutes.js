@@ -1,9 +1,3 @@
-const express = require('express');
-const router = express.Router();
-const User = require('../models/User');
-const Transaction = require('../models/Transaction');
-const jwt = require('jsonwebtoken');
-
 router.post('/validate-referral', async (req, res) => {
     try {
         const { referralCode } = req.body;
@@ -50,6 +44,4 @@ router.post('/validate-referral', async (req, res) => {
         console.error('Error validating referral code:', error);
         res.status(500).json({ success: false, message: 'Server error' });
     }
-});
-
-module.exports = router;
+}); 
