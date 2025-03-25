@@ -171,16 +171,16 @@ app.post('/api/verify-otp', async (req, res) => {
             phone,
             password: hashedPassword,
             referredBy: referrer ? referrer._id : null,
-            points: referralCode ? 50 : 0 // Give 50 points to new user if they used a referral code
+            points: referralCode ? 10 : 0 // Give 10 points to new user if they used a referral code
         });
 
         await newUser.save();
 
         // Update referrer if exists
         if (referrer) {
-            // Add 100 points to referrer
-            referrer.points += 100;
-            referrer.referralEarnings += 100;
+            // Add 20 points to referrer
+            referrer.points += 20;
+            referrer.referralEarnings += 20;
             referrer.referrals.push(newUser._id);
             await referrer.save();
 
@@ -188,7 +188,7 @@ app.post('/api/verify-otp', async (req, res) => {
             await Transaction.create({
                 userId: newUser._id,
                 type: 'referral_bonus',
-                amount: 50,
+                amount: 10,
                 status: 'completed',
                 description: 'Referral signup bonus'
             });
@@ -196,7 +196,7 @@ app.post('/api/verify-otp', async (req, res) => {
             await Transaction.create({
                 userId: referrer._id,
                 type: 'referral_bonus',
-                amount: 100,
+                amount: 20,
                 status: 'completed',
                 description: 'Referral reward'
             });
