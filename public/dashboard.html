@@ -10,6 +10,40 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <style>
+        .upi-id-container {
+            display: flex;
+            align-items: center;
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 8px;
+            max-width: 100%;
+            margin: 10px 0;
+            gap: 10px;
+        }
+
+        .upi-id {
+            font-family: monospace;
+            font-size: 14px;
+            word-break: break-all;
+            flex: 1;
+            color: #333;
+        }
+
+        .copy-upi-btn {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: background 0.3s ease;
+        }
+
+        .copy-upi-btn:hover {
+            background: #45a049;
+        }
+
         :root {
             --primary-purple: #7e57c2;
             --light-purple: #f6f3ff;
@@ -2563,7 +2597,7 @@
                         <p>Scan QR code or pay to our UPI ID below</p>
                         <div class="upi-payment-container">
                             <div class="qr-code-section">
-                                <img src="qrpayment.jpg" alt="UPI QR Code" class="qr-code-image">
+                                <img src="https://i.ibb.co/5XqWjmRt/qrpayment.jpg" alt="QR Code">
                             </div>
                             <div class="upi-details">
                                 <h4>UPI ID</h4>
