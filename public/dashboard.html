@@ -3909,6 +3909,12 @@
                     teamList.appendChild(memberCard);
                 });
 
+                // Update total referrals counter
+                const totalReferralsElement = document.getElementById('totalReferrals');
+                if (totalReferralsElement && data.referrals) {
+                    totalReferralsElement.textContent = data.referrals.length;
+                }
+
                 // Update total earnings if available
                 const totalEarningsElement = document.getElementById('totalEarnings');
                 if (totalEarningsElement && data.totalEarnings !== undefined) {
