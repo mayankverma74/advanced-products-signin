@@ -72,6 +72,13 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 12px;
+            margin: 2px;
+        }
+        
+        .wallet-controls, .points-controls {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 4px;
         }
         .add-money {
             background-color: #4caf50;
@@ -104,7 +111,8 @@
                     <th>Full Name</th>
                     <th>Phone</th>
                     <th>Wallet Balance</th>
-                    <th>Action</th>
+                    <th>Points Balance</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody id="usersTable"></tbody>
@@ -129,9 +137,16 @@
                         <td>${user.full_name}</td>
                         <td>${user.phone}</td>
                         <td>${user.wallet_balance}</td>
+                        <td>${user.points_balance || 0}</td>
                         <td>
-                            <button class='wallet-btn add-money' onclick="updateWallet('${user.phone}', 100)">+100</button>
-                            <button class='wallet-btn deduct-money' onclick="updateWallet('${user.phone}', -100)">-100</button>
+                            <div class="wallet-controls">
+                                <button class='wallet-btn add-money' onclick="updateWallet('${user.phone}', 100)">💰 +100</button>
+                                <button class='wallet-btn deduct-money' onclick="updateWallet('${user.phone}', -100)">💰 -100</button>
+                            </div>
+                            <div class="points-controls">
+                                <button class='wallet-btn add-money' onclick="updatePoints('${user.phone}', 100)">⭐ +100</button>
+                                <button class='wallet-btn deduct-money' onclick="updatePoints('${user.phone}', -100)">⭐ -100</button>
+                            </div>
                         </td>
                     `;
                     usersTable.appendChild(row);
@@ -144,7 +159,7 @@
         async function updateWallet(phone, amount) {
             const adminToken = localStorage.getItem('adminToken');
             try {
-                const response = await fetch('http://localhost:3000/api/admin/update-wallet', {
+                const response = await fetch(`${API_BASE_URL}/api/admin/update-wallet`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -157,6 +172,28 @@
                     setTimeout(() => window.location.reload(), 1500);
                 } else {
                     throw new Error('Failed to update wallet');
+                }
+            } catch (error) {
+                Swal.fire({ icon: 'error', title: 'Error', text: error.message });
+            }
+        }
+
+        async function updatePoints(phone, amount) {
+            const adminToken = localStorage.getItem('adminToken');
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/admin/update-points`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${adminToken}`
+                    },
+                    body: JSON.stringify({ phone, amount })
+                });
+                if (response.ok) {
+                    Swal.fire({ icon: 'success', title: 'Success', text: 'Points updated' });
+                    setTimeout(() => window.location.reload(), 1500);
+                } else {
+                    throw new Error('Failed to update points');
                 }
             } catch (error) {
                 Swal.fire({ icon: 'error', title: 'Error', text: error.message });

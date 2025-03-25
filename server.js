@@ -1641,10 +1641,16 @@ const startServer = async () => {
         // Create/update default admin account
         await createDefaultAdmin();
         
+        // Initialize routes
+        const adminRoutes = require('./routes/admin');
+        const pointsRoutes = require('./routes/points');
+        app.use('/api/admin', adminRoutes);
+        app.use('/api/points', pointsRoutes);
+        
         const PORT = process.env.PORT || 3000;
         app.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}`);
-            keepAlive(); // Add this line here
+            keepAlive();
         });
     } catch (error) {
         console.error('Failed to start server:', error);
