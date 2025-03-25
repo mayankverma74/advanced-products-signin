@@ -309,31 +309,7 @@
             margin-right: 8px;
             animation: pulse 2s infinite;
         }
-        .claim-points {
-    margin-top: 20px; /* Space above the claim points section */
-}
 
-.claim-button {
-    background-color: #673ab7; /* Primary color */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
-}
-
-.claim-button:hover {
-    background-color: #5e35b1; /* Darker shade on hover */
-    transform: scale(1.05);
-}
-
-.claim-message {
-    margin-top: 10px;
-    font-size: 14px;
-    text-align: center;
-} 
         .logout {
             border-top: 1px solid rgba(0,0,0,0.05);
             margin-top: 8px;
@@ -2253,13 +2229,7 @@
                                 <span>Refer & Earn</span>
                                 <i class="fas fa-chevron-right menu-indicator"></i>
                             </a>
-                                <a href="#" class="menu-item" onclick="openClaimPoints()">
-                                    <div class="menu-icon">
-                                        <i class="fas fa-gift"></i>
-                                    </div>
-                                    <span>Claim Points</span>
-                                    <i class="fas fa-chevron-right menu-indicator"></i>
-                                </a>      
+      
                                 <a href="#" class="menu-item" onclick="showContactModal()">
                                     <div class="menu-icon">
                                         <i class="fas fa-headset"></i>
@@ -2281,8 +2251,7 @@
 
     <!-- Main Content -->
     <div class="main-content">
-        <!-- Claim Message Section -->
-    <div id="claimMessage" style="margin-top: 20px;"></div>
+    
 
         <!-- Balance Section -->
         <section class="balance-section">
@@ -4741,51 +4710,7 @@
             }
         });
 
-        function openClaimPoints() {
-    const token = localStorage.getItem('token'); // Retrieve the token from localStorage
 
-    fetch(`${API_BASE_URL}/api/claim-points`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}` // Use the token for authorization
-        }
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to claim points');
-        }
-        return response.json();
-    })
-    .then(data => {
-        const messageElement = document.getElementById('claimMessage');
-        const claimButton = document.getElementById('claimPointsButton');
-
-        if (messageElement && claimButton) {
-            if (data.message) {
-                messageElement.textContent = `Successfully claimed 2 points! Next claim available in 1 hour.`;
-                messageElement.style.color = 'green';
-                claimButton.disabled = true;
-                setTimeout(() => {
-                    claimButton.disabled = false;
-                }, 3600000); // 1 hour in milliseconds
-            } else {
-                messageElement.textContent = data.error;
-                messageElement.style.color = 'red';
-            }
-        } else {
-            console.error('Required elements not found in the DOM.');
-        }
-    })
-    .catch(error => {
-        console.error('Error claiming points:', error);
-        const messageElement = document.getElementById('claimMessage');
-        if (messageElement) {
-            messageElement.textContent = 'An error occurred while claiming points. Please try again.';
-            messageElement.style.color = 'red';
-        }
-    });
-} 
 
     </script>
 
